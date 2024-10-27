@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
-import { authenticationService } from 'src/_services';
+// import { authenticationService } from 'src/_services';
 
 import Logo from 'src/components/logo';
 
@@ -28,7 +28,7 @@ export default function NotFoundView() {
     </Box>
   );
   const logOutHandler = () => {
-    authenticationService.logOut();
+    // authenticationService.logOut();
     navigate('/login');
   };
 

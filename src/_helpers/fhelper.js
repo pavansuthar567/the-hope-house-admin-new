@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { authenticationService } from '../_services';
+// import { authenticationService } from '../_services';
 import navConfig from 'src/layouts/dashboard/config-navigation';
 
 const getCurrentUser = () => {
@@ -221,39 +221,39 @@ const checkUserPermission = (userPermissions, pageId) => {
   return userPermissions?.find((permission) => permission.pageId === pageId);
 };
 
-const permissionWiseRedirect = (adminWisePermisisons) => {
-  if (adminWisePermisisons?.length) {
-    const pagesList = fhelper.getAllPagesList();
-    const dashboardPermission = adminWisePermisisons.find(
-      (permission) => permission.pageId === 'dashboard'
-    );
+// const permissionWiseRedirect = (adminWisePermisisons) => {
+//   if (adminWisePermisisons?.length) {
+//     const pagesList = fhelper.getAllPagesList();
+//     const dashboardPermission = adminWisePermisisons.find(
+//       (permission) => permission.pageId === 'dashboard'
+//     );
 
-    if (dashboardPermission) {
-      const dashboardPage = navConfig.find((page) => page.pageId === 'dashboard');
-      if (dashboardPage) {
-        return dashboardPage.path;
-      }
-    }
+//     if (dashboardPermission) {
+//       const dashboardPage = navConfig.find((page) => page.pageId === 'dashboard');
+//       if (dashboardPage) {
+//         return dashboardPage.path;
+//       }
+//     }
 
-    const matchedPermission = adminWisePermisisons.find((permission) =>
-      pagesList.find((page) => page.pageId === permission.pageId)
-    );
-    if (matchedPermission) {
-      const matchedPage = navConfig.find((page) => page.pageId === matchedPermission.pageId);
-      if (matchedPage) {
-        return matchedPage.path;
-      } else {
-        authenticationService.logOut();
-        return;
-      }
-    } else {
-      authenticationService.logOut();
-      return;
-    }
-  } else {
-    return false;
-  }
-};
+//     const matchedPermission = adminWisePermisisons.find((permission) =>
+//       pagesList.find((page) => page.pageId === permission.pageId)
+//     );
+//     if (matchedPermission) {
+//       const matchedPage = navConfig.find((page) => page.pageId === matchedPermission.pageId);
+//       if (matchedPage) {
+//         return matchedPage.path;
+//       } else {
+//         authenticationService.logOut();
+//         return;
+//       }
+//     } else {
+//       authenticationService.logOut();
+//       return;
+//     }
+//   } else {
+//     return false;
+//   }
+// };
 
 const isValidNumber = (value) => {
   return typeof value === 'number' && !isNaN(value);
@@ -326,7 +326,7 @@ export const fhelper = {
   sortByField,
   getAllPagesList,
   checkUserPermission,
-  permissionWiseRedirect,
+  // permissionWiseRedirect,
   isValidNumber,
   toFixedNumber,
   capitalWords,

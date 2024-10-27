@@ -19,7 +19,7 @@ import { bgGradient } from 'src/theme/css';
 import Iconify from 'src/components/iconify';
 
 import { fhelper } from '../../_helpers';
-import { adminService, toast } from '../../_services';
+// import { adminService, toast } from '../../_services';
 
 // ----------------------------------------------------------------------
 
@@ -52,32 +52,32 @@ export default function ForgetPassword() {
     confirmPassword: '',
   };
 
-  useEffect(() => {
-    if (currentUser) {
-      const path = fhelper.permissionWiseRedirect(adminWisePermisisons);
-      if (path) {
-        navigate(path);
-      } else {
-        navigate('/login');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     const path = fhelper.permissionWiseRedirect(adminWisePermisisons);
+  //     if (path) {
+  //       navigate(path);
+  //     } else {
+  //       navigate('/login');
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const handleSubmit = (fields, { setStatus, setSubmitting }) => {
     setStatus();
-    adminService
-      .forgotPassword(fields)
-      .then(() => {
-        setSubmitting(false);
-        toast.success(`Congratulations! You've successfully reset your password`);
-        navigate('/login');
-      })
-      .catch((err) => {
-        setSubmitting(false);
-        const errorMessage = err.message || 'something went wrong';
-        toast.error(errorMessage);
-      });
+    // adminService
+    //   .forgotPassword(fields)
+    //   .then(() => {
+    //     setSubmitting(false);
+    //     toast.success(`Congratulations! You've successfully reset your password`);
+    //     navigate('/login');
+    //   })
+    //   .catch((err) => {
+    //     setSubmitting(false);
+    //     const errorMessage = err.message || 'something went wrong';
+    //     toast.error(errorMessage);
+    //   });
   };
 
   const renderForm = (

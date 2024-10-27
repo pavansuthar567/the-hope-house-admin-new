@@ -4,7 +4,6 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from 'src/layouts/dashboard';
 // import ProtectedRoutes from 'src/guard/ProtectedRoutes';
 
-export const IndexPage = lazy(() => import('src/pages/app'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const Unauthorized = lazy(() => import('src/pages/unauthorized'));
@@ -28,7 +27,7 @@ export default function Router() {
         {
           element: (
             // <ProtectedRoutes pageId={'dashboard'}>
-            <IndexPage />
+            <div >DashBoard</div>
             // </ProtectedRoutes>
           ),
           index: true,

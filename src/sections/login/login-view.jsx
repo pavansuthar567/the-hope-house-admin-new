@@ -20,8 +20,7 @@ import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { fhelper } from '../../_helpers';
-import { adminService, toast } from '../../_services';
-import { setAdminWisePermisisons } from '../../store/slices/adminSlice';
+// import { adminService, toast } from '../../_services';
 
 // ----------------------------------------------------------------------
 
@@ -44,13 +43,13 @@ export default function LoginView() {
 
   const currentUser = fhelper.getCurrentUser();
 
-  useEffect(() => {
-    if (currentUser) {
-      const path = fhelper.permissionWiseRedirect(adminWisePermisisons);
-      if (path) navigate(path);
-    }
-    return () => clearAbortController(); // Cancel request on unmount/route change
-  }, []);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     const path = fhelper.permissionWiseRedirect(adminWisePermisisons);
+  //     if (path) navigate(path);
+  //   }
+  //   return () => clearAbortController(); // Cancel request on unmount/route change
+  // }, []);
 
   const initialValues = {
     email: '',
@@ -67,27 +66,27 @@ export default function LoginView() {
   const handleSubmit = useCallback(
     async (fields, { setStatus }) => {
       setStatus();
-      const payload = {
-        email: fields.email,
-        password: fields.password,
-      };
-      if (!abortControllerRef.current) {
-        abortControllerRef.current = new AbortController();
-      }
+      // const payload = {
+      //   email: fields.email,
+      //   password: fields.password,
+      // };
+      // if (!abortControllerRef.current) {
+      //   abortControllerRef.current = new AbortController();
+      // }
 
-      const response = await adminService.adminLogin(payload, abortControllerRef.current);
-      if (response?.adminData) {
-        const permissions = response?.adminData.permissions ?? [];
-        dispatch(setAdminWisePermisisons(permissions));
-        const path = fhelper.permissionWiseRedirect(permissions);
-        if (path) {
-          localStorage.setItem('adminCurrentUser', JSON.stringify(response?.adminData));
-          toast.success('Logged in successfully');
-          navigate(path);
-        } else {
-          toast.error("You don't have any permissions. Contact the administrator.");
-        }
-      }
+      // const response = await adminService.adminLogin(payload, abortControllerRef.current);
+      // if (response?.adminData) {
+      //   const permissions = response?.adminData.permissions ?? [];
+      //   // dispatch(setAdminWisePermisisons(permissions));
+      //   // const path = fhelper.permissionWiseRedirect(permissions);
+      //   if (path) {
+      //     localStorage.setItem('adminCurrentUser', JSON.stringify(response?.adminData));
+      //     toast.success('Logged in successfully');
+      //     navigate(path);
+      //   } else {
+      //     toast.error("You don't have any permissions. Contact the administrator.");
+      //   }
+      // }
     },
     [abortControllerRef]
   );

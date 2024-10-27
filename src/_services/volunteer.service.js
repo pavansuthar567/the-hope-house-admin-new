@@ -14,7 +14,7 @@ import { skills } from 'src/_helpers/constants';
 export const getVolunteers = () => async (dispatch) => {
   try {
     dispatch(setVolunteerLoading(true));
-    const res = await axios.get('/api/volunteer');
+    const res = await axios.get('volunteer');
     const updated = res?.data?.data?.map((x, i) => ({ srNo: i + 1, ...x }));
     await dispatch(setVolunteerList(fhelper.sortByField(updated) || []));
     return true;
@@ -29,7 +29,7 @@ export const getVolunteers = () => async (dispatch) => {
 export const deleteVolunteer = (id) => async (dispatch) => {
   try {
     dispatch(setCrudVolunteerLoading(true));
-    const res = await axios.delete(`/api/volunteer/${id}`);
+    const res = await axios.delete(`volunteer/${id}`);
     if (res) {
       toast.success('Volunteer deleted successfully');
       return true;
@@ -45,7 +45,7 @@ export const deleteVolunteer = (id) => async (dispatch) => {
 export const createVolunteer = (payload) => async (dispatch) => {
   try {
     dispatch(setCrudVolunteerLoading(true));
-    const res = await axios.post('/api/volunteer', payload);
+    const res = await axios.post('volunteer', payload);
 
     if (res) {
       toast.success('Volunteer inserted successfully');
@@ -66,7 +66,7 @@ export const updateVolunteer = (obj) => async (dispatch) => {
       const { _id, __v, ...payload } = obj;
       if (_id) {
         dispatch(setCrudVolunteerLoading(true));
-        const res = await axios.put(`/api/volunteer/${_id}`, payload);
+        const res = await axios.put(`volunteer/${_id}`, payload);
 
         if (res) {
           toast.success('Volunteer updated successfully');
@@ -90,7 +90,7 @@ export const updateVolunteer = (obj) => async (dispatch) => {
 export const getVolunteer = (id) => async (dispatch) => {
   try {
     dispatch(setVolunteerLoading(true));
-    const res = await axios.get(`/api/volunteer/${id}`);
+    const res = await axios.get(`volunteer/${id}`);
 
     if (res) {
       let data = { ...res?.data?.data };

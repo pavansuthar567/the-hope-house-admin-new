@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { fhelper } from 'src/_helpers';
-import { authenticationService } from 'src/_services';
+// import { authenticationService } from 'src/_services';
 import profileLogo from '/assets/images/avatars/avatar_25.jpg';
 
 // ----------------------------------------------------------------------
@@ -42,7 +42,7 @@ export default function AccountPopover() {
   };
 
   const logOutHandler = () => {
-    authenticationService.logOut();
+    // authenticationService.logOut();
     setOpen(null);
     navigate('/login');
   };
