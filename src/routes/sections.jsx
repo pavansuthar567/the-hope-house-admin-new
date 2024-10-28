@@ -9,6 +9,8 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const Unauthorized = lazy(() => import('src/pages/unauthorized'));
 export const AddVolunteerPage = lazy(() => import('src/pages/volunteer/add'));
 export const VolunteersPage = lazy(() => import('src/pages/volunteer/volunteer'));
+export const AddTestimonialPage = lazy(() => import('src/pages/testimonial/add'));
+export const TestimonialPage = lazy(() => import('src/pages/testimonial/testimonial'));
 export const ForgetPassword = lazy(() => import('src/pages/forget-password'));
 
 // ----------------------------------------------------------------------
@@ -46,6 +48,22 @@ export default function Router() {
           element: (
             // <ProtectedRoutes pageId={'volunteer'}>
             <AddVolunteerPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'testimonial',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <TestimonialPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/testimonial/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddTestimonialPage />
             // </ProtectedRoutes>
           ),
         },

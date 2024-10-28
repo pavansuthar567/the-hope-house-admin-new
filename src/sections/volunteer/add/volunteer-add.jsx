@@ -30,7 +30,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { skills } from 'src/_helpers/constants';
 import Label from 'src/components/label';
-import { firstName } from 'src/_helpers';
 
 // ----------------------------------------------------------------------
 
