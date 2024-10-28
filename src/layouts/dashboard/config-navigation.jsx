@@ -35,6 +35,13 @@ const navConfig = [
     icon: icon('ic_user'),
     children: ['/volunteer', '/volunteer/add'],
   },
+  {
+    title: 'testimonial',
+    pageId: 'testimonial',
+    path: '/testimonial',
+    icon: icon('ic_user'),
+    children: ['/testimonial', '/testimonial/add'],
+  },
   // {
   //   title: 'brand',
   //   pageId: 'slider',
