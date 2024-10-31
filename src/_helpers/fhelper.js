@@ -1,4 +1,7 @@
+import { TableCell, TableRow } from '@mui/material';
 import moment from 'moment';
+import Iconify from 'src/components/iconify';
+import Label from 'src/components/label';
 // import { authenticationService } from '../_services';
 import navConfig from 'src/layouts/dashboard/config-navigation';
 
@@ -308,6 +311,86 @@ const getRandomNumberLimitedDigits = () => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+function toTitleCase(str) {
+  return str
+    .replace(/([A-Z])/g, ' $1') // Add space before uppercase letters
+    .trim() // Remove leading/trailing spaces
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+function getHeadersFromObjects(objects, includeKeys = []) {
+  // Create a Set to store unique keys
+  const headersSet = new Set();
+
+  // Iterate through each object and collect keys
+  objects.forEach((obj) => {
+    Object.keys(obj).forEach((key) => {
+      // Check if includeKeys is provided and if the key is included
+      if (includeKeys.length === 0 || includeKeys.includes(key)) {
+        headersSet.add(toTitleCase(key)); // Convert key to title case and add to set
+      }
+    });
+  });
+
+  // Convert Set to Array and return
+  return Array.from(headersSet);
+}
+
+// const renderTableBody = (data) => {
+//   return data?.map((member, i) => (
+//     <>
+//       {Object.keys(member).map((key, index) => {
+//         let cellContent;
+
+//         // Get the value for the current key
+//         const value = member[key];
+
+//         console.log('value', value);
+//         console.log('type', typeof value);
+//         // Determine the data type and set cellContent accordingly using if-else
+//         if (typeof value === 'string') {
+//           cellContent = value || 'N/A'; // Handle empty strings
+//         } else if (typeof value === 'number') {
+//           cellContent = value.toString(); // Convert numbers to string
+//         } else if (typeof value === 'boolean') {
+//           cellContent = value ? 'Yes' : 'No'; // Format boolean values
+//         } else if (Array.isArray(value)) {
+//           // Handle arrays (e.g., skills)
+//           cellContent = (
+//             <div className="!flex gap-2 flex-nowrap min-w-fit h-fit">
+//               {value?.map((item, skillIndex) => (
+//                 <Label sx={{ m: 0 }} key={`skill-${item}-${skillIndex}`}>
+//                   {item}
+//                 </Label>
+//               ))}
+//             </div>
+//           );
+//         } else if (value instanceof Date) {
+//           // Handle date objects
+//           cellContent = fhelper.formatAndDisplayDate(value);
+//         } else if (typeof value === 'object' && value !== null) {
+//           // Handle objects (e.g., address, emergencyContact)
+//           cellContent = `${value?.street || ''}, ${value?.city || ''}, ${value?.state || ''}, ${value?.zipCode || ''}`;
+//         } else {
+//           // Handle unexpected types
+//           cellContent = 'N/A';
+//         }
+
+//         return (
+//           <TableCell
+//             key={`cell-${i}-${index}`}
+//             className={Array.isArray(value) ? 'flex-nowrap' : 'text-nowrap'}
+//           >
+//             {cellContent}
+//           </TableCell>
+//         );
+//       })}
+//     </>
+//   ));
+// };
+
 export const fhelper = {
   getCurrentUser,
   getVariationsArray,
@@ -337,4 +420,7 @@ export const fhelper = {
   stringReplacedWithUnderScore,
   stringReplacedWithSpace,
   getRandomNumberLimitedDigits,
+  getHeadersFromObjects,
+  toTitleCase,
+  // renderTableBody,
 };

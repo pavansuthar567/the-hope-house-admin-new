@@ -19,17 +19,22 @@ import {
   OutlinedInput,
 } from '@mui/material';
 
-import { volunteerInitDetails, setSelectedVolunteer } from 'src/store/slices/volunteerSlice';
+import { teamMembersInitDetails, setSelectedTeamMembers } from 'src/store/slices/teamMembersSlice';
 
 import Spinner from 'src/components/spinner';
 import { LoadingButton } from 'src/components/button';
-import { createVolunteer, getVolunteer, updateVolunteer } from 'src/_services/volunteer.service';
+import {
+  createTeamMembers,
+  getTeamMember,
+  updateTeamMembers,
+} from 'src/_services/team-members.service';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { skills } from 'src/_helpers/constants';
+import { MenuProps, roles, skills } from 'src/_helpers/constants';
 import Label from 'src/components/label';
+import { FileDrop } from 'src/components/file-drop';
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +49,8 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits')
     .required('Phone number is required'),
+  role: Yup.string().required('Role is required'),
+  bio: Yup.string().required('Bio is required'),
   address: Yup.object().shape({
     street: Yup.string()
       .max(255, 'Street must be 255 characters or less')
@@ -54,60 +61,53 @@ const validationSchema = Yup.object().shape({
       .matches(/^[0-9]{6}$/, 'ZIP code must be exactly 6 digits')
       .required('ZIP code is required'),
   }),
-  dateOfBirth: Yup.date()
-    .required('Date of birth is required')
-    .max(
-      new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
-      'You must be at least 18 years old'
-    ),
-  gender: Yup.string()
-    .oneOf(['Male', 'Female', 'Other'], 'Invalid gender')
-    .required('Gender is required'),
   skills: Yup.array()
     .of(Yup.string().max(50, 'Skill must be 50 characters or less'))
     .min(1, 'At least one skill is required')
     .required('Skills are required'),
-  availability: Yup.string()
-    .oneOf(['Full-time', 'Part-time', 'Contract'], 'Invalid availability type')
-    .required('Availability is required'),
-  joinedDate: Yup.date()
-    .required('Joined date is required')
-    .min(Yup.ref('dateOfBirth'), 'Joined date must be after date of birth'),
-  experience: Yup.string()
-    .max(50, 'Experience description must be 50 characters or less')
-    .required('Experience is required'),
-  emergencyContact: Yup.object().shape({
-    name: Yup.string()
-      .max(100, 'Name must be 100 characters or less')
-      .required('Emergency contact name is required'),
-    phoneNumber: Yup.string()
-      .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits')
-      .required('Emergency contact phone number is required'),
-    relation: Yup.string()
-      .max(50, 'Relation must be 50 characters or less')
-      .required('Relation is required'),
+  dateOfJoining: Yup.date()
+    .required('Date of joining is required')
+    .max(new Date(), 'Date of joining must be in the past or today'),
+  profilePictureUrl: Yup.array().min(1).required('Profile picture URL is required'),
+  socialMediaLinks: Yup.object().shape({
+    linkedIn: Yup.string()
+      .url('LinkedIn URL must be a valid URL')
+      .max(100, 'LinkedIn URL must be 100 characters or less')
+      .required('LinkedIn URL is required'),
+    twitter: Yup.string()
+      .url('Twitter URL must be a valid URL')
+      .max(100, 'Twitter URL must be 100 characters or less')
+      .required('Twitter URL is required'),
+    facebook: Yup.string()
+      .url('Facebook URL must be a valid URL')
+      .max(100, 'Facebook URL must be 100 characters or less')
+      .required('Facebook URL is required'),
+    instagram: Yup.string()
+      .url('Instagram URL must be a valid URL')
+      .max(100, 'Instagram URL must be 100 characters or less')
+      .required('Instagram URL is required'),
   }),
 });
 
 // ----------------------------------------------------------------------
 
-export default function AddVolunteerPage() {
+export default function AddTeamMember() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const volunteerId = searchParams.get('volunteerId');
+  const teamMembersId = searchParams.get('teamMembersId');
 
-  const { volunteerLoading, crudVolunteerLoading, selectedVolunteer } = useSelector(
-    ({ volunteer }) => volunteer
+  const { teamMembersLoading, crudTeamMembersLoading, selectedTeamMembers } = useSelector(
+    ({ teamMembers }) => teamMembers
   );
 
   useEffect(() => {
-    if (volunteerId) dispatch(getVolunteer(volunteerId));
-  }, [volunteerId]);
+    if (teamMembersId) dispatch(getTeamMember(teamMembersId));
+  }, [teamMembersId]);
 
   useEffect(() => {
-    return () => dispatch(setSelectedVolunteer(volunteerInitDetails));
+    return () => dispatch(setSelectedTeamMembers(teamMembersInitDetails));
   }, []);
 
   const onSubmit = useCallback(async (fields, { resetForm }) => {
@@ -119,49 +119,58 @@ export default function AddVolunteerPage() {
         state: fields?.address?.state,
         zipCode: fields?.address?.zipCode,
       },
-      emergencyContact: {
-        relation: fields?.emergencyContact?.relation,
-        phoneNumber: fields?.emergencyContact?.phoneNumber,
-        name: fields?.emergencyContact?.name,
+      socialMediaLinks: {
+        facebook: fields?.socialMediaLinks?.facebook,
+        instagram: fields?.socialMediaLinks?.instagram,
+        linkedIn: fields?.socialMediaLinks?.linkedIn,
+        twitter: fields?.socialMediaLinks?.twitter,
       },
       skills: fields?.skills.includes('other') ? [fields?.otherSkill] : fields?.skills,
     };
     let res;
     delete payload.otherSkill;
+    delete payload.previewProfilePic;
     if (payload?._id) {
-      res = await dispatch(updateVolunteer(payload));
+      res = await dispatch(updateTeamMembers(payload));
     } else {
-      res = await dispatch(createVolunteer(payload));
+      res = await dispatch(createTeamMembers(payload));
     }
     if (res) {
       resetForm();
-      dispatch(setSelectedVolunteer(volunteerInitDetails));
-      navigate('/volunteer');
+      dispatch(setSelectedTeamMembers(teamMembersInitDetails));
+      navigate('/team-members');
     }
   }, []);
 
-  const { values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue } =
-    useFormik({
-      onSubmit,
-      enableReinitialize: true,
-      initialValues: selectedVolunteer,
-      validationSchema,
-    });
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    ...restFormik
+  } = useFormik({
+    onSubmit,
+    enableReinitialize: true,
+    initialValues: selectedTeamMembers,
+    validationSchema,
+  });
 
   const handleOtherSkillChange = (e) => {
-    dispatch(setSelectedVolunteer({ ...values, otherSkill: e.target.value }));
+    dispatch(setSelectedTeamMembers({ ...values, otherSkill: e.target.value }));
   };
 
   const handleChangeSkills = (event) => {
     const { value } = event.target;
     setFieldValue('skills', value === 'other' ? ['other'] : [value]);
   };
-
   return (
     <>
       <Container sx={{ height: '100%' }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h4">Volunteer</Typography>
+          <Typography variant="h4">TeamMembers</Typography>
         </Box>
         <Stack
           sx={{
@@ -172,7 +181,7 @@ export default function AddVolunteerPage() {
             overflow: 'initial',
           }}
         >
-          {volunteerLoading ? (
+          {teamMembersLoading ? (
             <div className="flex justify-center items-center h-full">
               <Spinner />
             </div>
@@ -183,7 +192,9 @@ export default function AddVolunteerPage() {
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Details</Typography>
 
-                    <Typography variant="body2">First Name, Last Name, DOB...</Typography>
+                    <Typography variant="body2">
+                      First Name, Last Name, Date of joining...
+                    </Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -264,71 +275,24 @@ export default function AddVolunteerPage() {
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6} m={0}>
                           <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DemoContainer components={['DatePicker']} sx={{ pt: 0 }}>
+                            <DemoContainer components={['DatePicker']} sx={{ pt: 1 }}>
                               <DatePicker
                                 sx={{ width: '100%' }}
-                                label="DOB"
-                                value={new Date(values.dateOfBirth) || null}
+                                label="Date Of Joining"
+                                value={new Date(values.dateOfJoining) || null}
+                                onChange={(newValue) => setFieldValue('dateOfJoining', newValue)}
                                 slotProps={{
                                   textField: {
-                                    error: !!(touched.dateOfBirth || errors.dateOfBirth),
+                                    error: !!(touched.dateOfJoining && errors.dateOfJoining),
                                     helperText:
-                                      touched.dateOfBirth || errors.dateOfBirth
-                                        ? errors.dateOfBirth
-                                        : '',
-                                  },
-                                }}
-                                onChange={(newValue) => setFieldValue('dateOfBirth', newValue)}
-                              />
-                            </DemoContainer>
-                          </LocalizationProvider>
-                        </Grid>
-                        <Grid xs={12} sm={6} md={6} m={0}>
-                          <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DemoContainer components={['DatePicker']} sx={{ pt: 0 }}>
-                              <DatePicker
-                                sx={{ width: '100%' }}
-                                label="Joined Date"
-                                value={new Date(values.joinedDate) || null}
-                                onChange={(newValue) => setFieldValue('joinedDate', newValue)}
-                                slotProps={{
-                                  textField: {
-                                    error: !!(touched.joinedDate || errors.joinedDate),
-                                    helperText:
-                                      touched.joinedDate || errors.joinedDate
-                                        ? errors.joinedDate
+                                      touched.dateOfJoining && errors.dateOfJoining
+                                        ? errors.dateOfJoining
                                         : '',
                                   },
                                 }}
                               />
                             </DemoContainer>
                           </LocalizationProvider>
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6}>
-                          <FormControl fullWidth>
-                            <InputLabel id="gender-label">Gender</InputLabel>
-                            <Select
-                              labelId="gender-label"
-                              id="gender"
-                              name="gender"
-                              value={values.gender || ''}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={!!(touched.gender && errors.gender)}
-                              label="Gender"
-                            >
-                              <MenuItem value="Male">Male</MenuItem>
-                              <MenuItem value="Female">Female</MenuItem>
-                              <MenuItem value="Other">Other</MenuItem>
-                            </Select>
-                            {touched.gender && errors.gender && (
-                              <Typography variant="caption" color="error">
-                                {errors.gender}
-                              </Typography>
-                            )}
-                          </FormControl>
                         </Grid>
                       </Grid>
                     </Card>
@@ -431,9 +395,7 @@ export default function AddVolunteerPage() {
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Specifications</Typography>
-                    <Typography variant="body2">
-                      Availability, Experience, Skills, SOS...
-                    </Typography>
+                    <Typography variant="body2">Role, skills, bio, social media link...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -444,42 +406,52 @@ export default function AddVolunteerPage() {
                       spacing={2}
                       component={Stack}
                     >
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                      <Grid container spacing={2} m={0}>
                         <Grid xs={12} sm={6} md={6}>
                           <FormControl sx={{ width: '100%' }}>
-                            <InputLabel>Availability</InputLabel>
+                            <InputLabel>Role</InputLabel>
                             <Select
-                              label="Availability"
-                              name="availability"
-                              value={values.availability || ''}
+                              label="Role"
+                              name="role"
+                              value={values.role || ''}
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              error={!!(touched.availability && errors.availability)}
+                              input={
+                                <OutlinedInput
+                                  label="Role"
+                                  error={!!(touched?.role && errors?.role)}
+                                  helperText={touched?.role && errors?.role ? errors?.role : ''}
+                                />
+                              }
                               MenuProps={MenuProps}
                             >
-                              <MenuItem value="Full-time">Full-time</MenuItem>
-                              <MenuItem value="Part-time">Part-time</MenuItem>
-                              <MenuItem value="Contract">Contract</MenuItem>
+                              {roles?.map((x, i) => (
+                                <MenuItem value={x?.value} key={`role-${i}`}>
+                                  <Label key={x?.label} color={'default'}>
+                                    {x?.label}
+                                  </Label>
+                                </MenuItem>
+                              ))}
                             </Select>
-                            {touched.availability && errors.availability && (
+                            {touched.role && errors.role && (
                               <Typography variant="caption" color="error">
-                                {errors.availability}
+                                {errors.role}
                               </Typography>
                             )}
                           </FormControl>
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            label="Experience"
-                            name="experience"
+                            sx={{
+                              width: '100%',
+                            }}
                             onBlur={handleBlur}
+                            name="bio"
+                            label="Bio"
                             onChange={handleChange}
-                            value={values.experience || ''}
-                            error={!!(touched.experience && errors.experience)}
-                            helperText={
-                              touched.experience && errors.experience ? errors.experience : ''
-                            }
-                            sx={{ width: '100%' }}
+                            value={values?.bio || ''}
+                            error={!!(touched?.bio && errors?.bio)}
+                            helperText={touched?.bio && errors?.bio ? errors?.bio : ''}
                           />
                         </Grid>
                       </Grid>
@@ -494,7 +466,15 @@ export default function AddVolunteerPage() {
                               value={values.skills || []}
                               onChange={handleChangeSkills}
                               onBlur={handleBlur}
-                              input={<OutlinedInput label="Skills" />}
+                              input={
+                                <OutlinedInput
+                                  label="Skills"
+                                  error={!!(touched?.skills && errors?.skills)}
+                                  helperText={
+                                    touched?.skills && errors?.skills ? errors?.skills : ''
+                                  }
+                                />
+                              }
                               MenuProps={MenuProps}
                             >
                               {skills?.map((x, i) => (
@@ -528,66 +508,121 @@ export default function AddVolunteerPage() {
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            label="Emergency Contact Name"
-                            name="emergencyContact.name"
+                            sx={{
+                              width: '100%',
+                            }}
                             onBlur={handleBlur}
+                            name="socialMediaLinks.facebook"
+                            label="Facebook Link"
                             onChange={handleChange}
-                            value={values.emergencyContact?.name || ''}
+                            value={values?.socialMediaLinks?.facebook || ''}
                             error={
-                              !!(touched.emergencyContact?.name && errors.emergencyContact?.name)
+                              !!(
+                                touched?.socialMediaLinks?.facebook &&
+                                errors?.socialMediaLinks?.facebook
+                              )
                             }
                             helperText={
-                              touched.emergencyContact?.name && errors.emergencyContact?.name
-                                ? errors.emergencyContact?.name
+                              touched?.socialMediaLinks?.facebook &&
+                              errors?.socialMediaLinks?.facebook
+                                ? errors?.socialMediaLinks?.facebook
                                 : ''
                             }
-                            sx={{ width: '100%' }}
                           />
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            label="Emergency Contact Phone"
-                            name="emergencyContact.phoneNumber"
+                            sx={{
+                              width: '100%',
+                            }}
                             onBlur={handleBlur}
+                            name="socialMediaLinks.instagram"
+                            label="Instagram Link"
                             onChange={handleChange}
-                            value={values.emergencyContact?.phoneNumber || ''}
+                            value={values?.socialMediaLinks?.instagram || ''}
                             error={
                               !!(
-                                touched.emergencyContact?.phoneNumber &&
-                                errors.emergencyContact?.phoneNumber
+                                touched?.socialMediaLinks?.instagram &&
+                                errors?.socialMediaLinks?.instagram
                               )
                             }
                             helperText={
-                              touched.emergencyContact?.phoneNumber &&
-                              errors.emergencyContact?.phoneNumber
-                                ? errors.emergencyContact?.phoneNumber
+                              touched?.socialMediaLinks?.instagram &&
+                              errors?.socialMediaLinks?.instagram
+                                ? errors?.socialMediaLinks?.instagram
                                 : ''
                             }
-                            sx={{ width: '100%' }}
                           />
                         </Grid>
                       </Grid>
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            label="Emergency Contact Relation"
-                            name="emergencyContact.relation"
+                            sx={{
+                              width: '100%',
+                            }}
                             onBlur={handleBlur}
+                            name="socialMediaLinks.twitter"
+                            label="Twitter Link"
                             onChange={handleChange}
-                            value={values.emergencyContact?.relation || ''}
+                            value={values?.socialMediaLinks?.twitter || ''}
                             error={
                               !!(
-                                touched.emergencyContact?.relation &&
-                                errors.emergencyContact?.relation
+                                touched?.socialMediaLinks?.twitter &&
+                                errors?.socialMediaLinks?.twitter
                               )
                             }
                             helperText={
-                              touched.emergencyContact?.relation &&
-                              errors.emergencyContact?.relation
-                                ? errors.emergencyContact?.relation
+                              touched?.socialMediaLinks?.twitter &&
+                              errors?.socialMediaLinks?.twitter
+                                ? errors?.socialMediaLinks?.twitter
                                 : ''
                             }
-                            sx={{ width: '100%' }}
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6} md={6}>
+                          <TextField
+                            sx={{
+                              width: '100%',
+                            }}
+                            onBlur={handleBlur}
+                            name="socialMediaLinks.linkedIn"
+                            label="LinkedIn Link"
+                            onChange={handleChange}
+                            value={values?.socialMediaLinks?.linkedIn || ''}
+                            error={
+                              !!(
+                                touched?.socialMediaLinks?.linkedIn &&
+                                errors?.socialMediaLinks?.linkedIn
+                              )
+                            }
+                            helperText={
+                              touched?.socialMediaLinks?.linkedIn &&
+                              errors?.socialMediaLinks?.linkedIn
+                                ? errors?.socialMediaLinks?.linkedIn
+                                : ''
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                        <Grid xs={12}>
+                          <FileDrop
+                            formik={{
+                              values,
+                              touched,
+                              errors,
+                              handleBlur,
+                              handleChange,
+                              handleSubmit,
+                              setFieldValue,
+                              ...restFormik,
+                            }}
+                            deleteKey={'deleteUploadedProfilePic'}
+                            mediaLimit={1}
+                            fileKey={'profilePictureUrl'}
+                            previewKey={'previewProfilePic'}
+                            loading={crudTeamMembersLoading || teamMembersLoading}
                           />
                         </Grid>
                       </Grid>
@@ -595,12 +630,12 @@ export default function AddVolunteerPage() {
                     <Stack gap={2} sx={{ mt: 2 }} direction={'row'} justifyContent={'end'}>
                       <LoadingButton
                         size="large"
-                        variant="contained"
                         type={'submit'}
+                        variant="contained"
                         onClick={handleSubmit}
-                        loading={crudVolunteerLoading}
+                        loading={crudTeamMembersLoading}
                       >
-                        {volunteerId ? 'Update' : 'Save'} Changes
+                        {teamMembersId ? 'Update' : 'Save'} Changes
                       </LoadingButton>
                     </Stack>
                   </Grid>

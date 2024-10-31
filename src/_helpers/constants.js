@@ -1,36 +1,3 @@
-export const topSellingDurationButtonsList = [
-  { name: 'All', value: 'all' },
-  { name: '1W', value: '1W' },
-  { name: '1M', value: '1M' },
-  { name: '3M', value: '3M' },
-  { name: '6M', value: '6M' },
-  { name: '1Y', value: '1Y' },
-];
-
-export const topSellingLimitList = [
-  { label: 'all', value: 0 },
-  { label: '5', value: 5 },
-  { label: '10', value: 10 },
-  { label: '20', value: 20 },
-  { label: '50', value: 50 },
-  { label: '100', value: 100 },
-];
-
-export const productStatusOptions = [
-  {
-    label: 'All',
-    value: 'all',
-  },
-  {
-    label: 'Active',
-    value: true,
-  },
-  {
-    label: 'Inactive',
-    value: false,
-  },
-];
-
 export const skills = [
   {
     label: 'Poster/Graphic Design',
@@ -58,6 +25,43 @@ export const skills = [
   },
 ];
 
+export const roles = [
+  {
+    label: 'Team Member',
+    value: 'Team Member',
+  },
+  {
+    label: 'Volunteer',
+    value: 'Volunteer',
+  },
+];
+
+export const eventTypes = [
+  {
+    label: 'Virtual',
+    value: 'Virtual',
+  },
+  {
+    label: 'In-Person',
+    value: 'In-Person',
+  },
+];
+
+export const eventStatuses = [
+  {
+    label: 'Upcoming',
+    value: 'Upcoming',
+  },
+  {
+    label: 'Completed',
+    value: 'Completed',
+  },
+  {
+    label: 'Cancelled',
+    value: 'Cancelled',
+  },
+];
+
 export const perPageCountOptions = [
   {
     label: '4',
@@ -77,18 +81,14 @@ export const perPageCountOptions = [
   },
 ];
 
-export const GOLD_TYPE = { title: 'Gold Type' };
+export const ITEM_HEIGHT = 48;
+export const ITEM_PADDING_TOP = 8;
 
-export const GOLD_COLOR = { title: 'Gold Color' };
-
-export const GOLD_TYPE_SUB_TYPES_LIST = [
-  { title: '10K', type: 'default' },
-  { title: '14K', type: 'default' },
-  { title: '18K', type: 'default' },
-];
-
-export const GOLD_COLOR_SUB_TYPES_LIST = [
-  { title: 'Yellow', type: 'color', hexCode: '#eeae3f' },
-  { title: 'White', type: 'color', hexCode: '#ffffff' },
-  { title: 'Rose', type: 'color', hexCode: '#e5785d' },
-];
+export const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};

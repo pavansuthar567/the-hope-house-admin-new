@@ -10,6 +10,7 @@ import { grey } from 'src/theme/palette';
 import Iconify from '../iconify';
 import filesFolder from '../../../public/assets/illustrations/files.svg';
 import PdfViewer from '../pdf-viewer';
+import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -19,8 +20,8 @@ const pdfReg = /application\/pdf/;
 const imageTypes = '.png, .jpg, .jpeg, .webp';
 const videoReg = /video\/(mp4|webm|ogg)/;
 const videoTypes = '.mp4, .webm, .ogg';
-// const TENMB = 10485760;
-const HUNDRED_MB = 104857600;
+const TENMB = 10485760;
+// const HUNDRED_MB = 104857600;
 const FIVEMB = 5242880;
 
 const getRegexByMediaType = (type) => {
@@ -53,7 +54,7 @@ const getRegexByMediaType = (type) => {
 // ----------------------------------------------------------------------
 
 const FileDrop = forwardRef(
-  ({ formik, mediaType, fileKey, previewKey, deleteKey, mediaLimit, loading, productId }, ref) => {
+  ({ formik, mediaType, fileKey, previewKey, deleteKey, mediaLimit, loading, id }, ref) => {
     const onDrop = useCallback(
       (acceptedFiles) => {
         let lengthPreview = formik.values?.[previewKey]?.length;
@@ -108,6 +109,7 @@ const FileDrop = forwardRef(
                   } else {
                     resolve({
                       type: 'new',
+                      mimeType: file.type,
                       image: reader.result,
                     });
                   }
@@ -165,14 +167,20 @@ const FileDrop = forwardRef(
               formik.values?.[previewKey]?.splice(index, 1);
               formik.setFieldValue([previewKey], [...formik.values?.[previewKey]]);
             }
-          } else if (productId && item.type === 'old') {
-            const deletedImage = formik.values?.[previewKey]?.splice(index, 1);
-            formik.setFieldValue([previewKey], [...formik.values?.[previewKey]]);
+          } else if (item.type === 'old') {
+            const previewList = Array.isArray(formik.values?.[previewKey])
+              ? [...formik.values[previewKey]] // Create a shallow copy
+              : [];
+            // const deletedImage = formik.values?.[previewKey]?.splice(index, 1);
+
+            const deletedImage = previewList?.splice(index, 1); // This will get the deleted image
+
+            formik.setFieldValue(previewKey, previewList);
             formik.setFieldValue([deleteKey], [...formik.values?.[deleteKey], ...deletedImage]);
           }
         }
       },
-      [formik, productId]
+      [formik]
     );
 
     const browseLink = (
@@ -208,8 +216,6 @@ const FileDrop = forwardRef(
               {...getInputProps()}
               name={fileKey}
               label={fileKey}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
               accept={mediaType === 'video' ? videoTypes : imageTypes}
             />
 

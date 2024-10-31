@@ -8,8 +8,14 @@ export const LoginPage = lazy(() => import('src/pages/login'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const Unauthorized = lazy(() => import('src/pages/unauthorized'));
 export const AddVolunteerPage = lazy(() => import('src/pages/volunteer/add'));
+export const AddTeamMembersPage = lazy(() => import('src/pages/team-members/add'));
 export const VolunteersPage = lazy(() => import('src/pages/volunteer/volunteer'));
 export const ForgetPassword = lazy(() => import('src/pages/forget-password'));
+export const TeamMembersPage = lazy(() => import('src/pages/team-members/team-members'));
+export const EventsPage = lazy(() => import('src/pages/events/events'));
+export const AddEventsPage = lazy(() => import('src/pages/events/add'));
+export const UserPage = lazy(() => import('src/pages/users/users'));
+export const AddUserPage = lazy(() => import('src/pages/users/add'));
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +33,7 @@ export default function Router() {
         {
           element: (
             // <ProtectedRoutes pageId={'dashboard'}>
-            <div >DashBoard</div>
+            <div>DashBoard</div>
             // </ProtectedRoutes>
           ),
           index: true,
@@ -49,214 +55,54 @@ export default function Router() {
             // </ProtectedRoutes>
           ),
         },
-        // {
-        //   path: '/brand',
-        //   element: (
-        //     <ProtectedRoutes pageId={'slider'}>
-        //       <SliderViewAddPage />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: '/menu',
-        //   element: (
-        //     <ProtectedRoutes pageId={'menu'}>
-        //       <MenuPage />
-        //     </ProtectedRoutes>
-        //   ),
-        //   children: [
-        //     {
-        //       path: '/menu/category',
-        //       element: (
-        //         <ProtectedRoutes pageId={'menu'}>
-        //           <MenuPage />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //     {
-        //       path: '/menu/subcategory',
-        //       element: (
-        //         <ProtectedRoutes pageId={'menu'}>
-        //           <MenuPage />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //     {
-        //       path: '/menu/productType',
-        //       element: (
-        //         <ProtectedRoutes pageId={'menu'}>
-        //           <MenuPage />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //   ],
-        // },
-        // {
-        //   path: '/collection',
-        //   element: (
-        //     <ProtectedRoutes pageId={'collection'}>
-        //       <Collection />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: '/customization',
-        //   element: (
-        //     <ProtectedRoutes pageId={'customization'}>
-        //       <Customization />
-        //     </ProtectedRoutes>
-        //   ),
-        //   children: [
-        //     {
-        //       path: '/customization/type',
-        //       element: (
-        //         <ProtectedRoutes pageId={'customization'}>
-        //           <Customization />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //     {
-        //       path: '/customization/subtype',
-        //       element: (
-        //         <ProtectedRoutes pageId={'customization'}>
-        //           <Customization />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //   ],
-        // },
-        // {
-        //   path: '/showcase-banner',
-        //   element: (
-        //     <ProtectedRoutes pageId={'showcasebanner'}>
-        //       <ShowCaseBanner />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: '/appointment',
-        //   element: (
-        //     <ProtectedRoutes pageId={'appointments'}>
-        //       <Appointments />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: '/custom-jewelry',
-        //   element: (
-        //     <ProtectedRoutes pageId={'customJewelry'}>
-        //       <CustomJewelry />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: '/review',
-        //   element: (
-        //     <ProtectedRoutes pageId={'review'}>
-        //       <Review />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: 'user',
-        //   element: (
-        //     <ProtectedRoutes pageId={'users'}>
-        //       <UserPage />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: 'subscribers',
-        //   element: (
-        //     <ProtectedRoutes pageId={'subscribers'}>
-        //       <Subscribers />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: 'permissions',
-        //   element: (
-        //     <ProtectedRoutes pageId={'permissions'}>
-        //       <Permissions />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: 'orders',
-        //   element: (
-        //     <ProtectedRoutes pageId={'orders'}>
-        //       <Orders />
-        //     </ProtectedRoutes>
-        //   ),
-        //   children: [
-        //     {
-        //       path: '/orders/list',
-        //       element: (
-        //         <ProtectedRoutes pageId={'orders'}>
-        //           <OrderList />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //     {
-        //       path: '/orders/refund',
-        //       element: (
-        //         <ProtectedRoutes pageId={'orders'}>
-        //           <Refund />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //   ],
-        // },
-        // {
-        //   path: '/orders/order-detail/:orderId',
-        //   element: (
-        //     <ProtectedRoutes pageId={'orders'}>
-        //       <OrdersDetail />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: 'returns',
-        //   element: (
-        //     <ProtectedRoutes pageId={'returns'}>
-        //       <Returns />
-        //     </ProtectedRoutes>
-        //   ),
-        //   children: [
-        //     {
-        //       path: '/returns/list',
-        //       element: (
-        //         <ProtectedRoutes pageId={'returns'}>
-        //           <ReturnList />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //     {
-        //       path: '/returns/refund',
-        //       element: (
-        //         <ProtectedRoutes pageId={'returns'}>
-        //           <ReturnRefund />
-        //         </ProtectedRoutes>
-        //       ),
-        //     },
-        //   ],
-        // },
-        // {
-        //   path: '/returns/return-detail/:returnId',
-        //   element: (
-        //     <ProtectedRoutes pageId={'returns'}>
-        //       <ReturnDetail />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
-        // {
-        //   path: '/report-analysis',
-        //   element: (
-        //     <ProtectedRoutes pageId={'report & analysis'}>
-        //       <ReportAnalysis />
-        //     </ProtectedRoutes>
-        //   ),
-        // },
+        {
+          path: '/team-members',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <TeamMembersPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/team-members/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddTeamMembersPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/events',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <EventsPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/events/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddEventsPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/users',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <UserPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/users/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddUserPage />
+            // </ProtectedRoutes>
+          ),
+        },
       ],
     },
     {
