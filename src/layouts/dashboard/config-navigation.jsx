@@ -53,6 +53,13 @@ const navConfig = [
     icon: <Face6Icon />,
     children: ['/users', '/users/add'],
   },
+  {
+    title: 'testimonial',
+    pageId: 'testimonial',
+    path: '/testimonial',
+    icon: icon('ic_user'),
+    children: ['/testimonial', '/testimonial/add'],
+  },
   // {
   //   title: 'brand',
   //   pageId: 'slider',

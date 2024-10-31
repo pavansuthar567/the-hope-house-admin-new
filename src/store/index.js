@@ -1,10 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
+import user from './slices/userSlice';
 import event from './slices/eventSlice';
 import common from './slices/commonSlice';
 import volunteer from './slices/volunteerSlice';
 import teamMembers from './slices/teamMembersSlice';
-import user from './slices/userSlice';
+import testimonial from './slices/testimonialSlice';
 
 // ----------------------------------------------------------------------
 
@@ -14,6 +15,7 @@ const reducers = combineReducers({
   common,
   volunteer,
   teamMembers,
+  testimonial,
 });
 
 // ----------------------------------------------------------------------
