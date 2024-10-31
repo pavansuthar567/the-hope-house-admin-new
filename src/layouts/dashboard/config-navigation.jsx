@@ -1,17 +1,18 @@
-import AppsTwoToneIcon from '@mui/icons-material/AppsTwoTone';
-import DiamondTwoToneIcon from '@mui/icons-material/DiamondTwoTone';
-import CategoryTwoToneIcon from '@mui/icons-material/CategoryTwoTone';
-import SlideshowTwoToneIcon from '@mui/icons-material/SlideshowTwoTone';
-import SummarizeTwoToneIcon from '@mui/icons-material/SummarizeTwoTone';
-import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone';
-import AssessmentTwoToneIcon from '@mui/icons-material/AssessmentTwoTone';
-import RateReviewTwoToneIcon from '@mui/icons-material/RateReviewTwoTone';
-import BookOnlineTwoToneIcon from '@mui/icons-material/BookOnlineTwoTone';
-import Diversity3TwoToneIcon from '@mui/icons-material/Diversity3TwoTone';
-import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
-import InsertEmoticonTwoToneIcon from '@mui/icons-material/InsertEmoticonTwoTone';
+// import AppsTwoToneIcon from '@mui/icons-material/AppsTwoTone';
+// import DiamondTwoToneIcon from '@mui/icons-material/DiamondTwoTone';
+// import CategoryTwoToneIcon from '@mui/icons-material/CategoryTwoTone';
+// import SlideshowTwoToneIcon from '@mui/icons-material/SlideshowTwoTone';
+// import SummarizeTwoToneIcon from '@mui/icons-material/SummarizeTwoTone';
+// import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone';
+// import AssessmentTwoToneIcon from '@mui/icons-material/AssessmentTwoTone';
+// import RateReviewTwoToneIcon from '@mui/icons-material/RateReviewTwoTone';
+// import BookOnlineTwoToneIcon from '@mui/icons-material/BookOnlineTwoTone';
+// import Diversity3TwoToneIcon from '@mui/icons-material/Diversity3TwoTone';
+// import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
+// import InsertEmoticonTwoToneIcon from '@mui/icons-material/InsertEmoticonTwoTone';
+import Face6Icon from '@mui/icons-material/Face6';
 
-import Iconify from 'src/components/iconify';
+// import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -30,10 +31,27 @@ const navConfig = [
   // },
   {
     title: 'volunteer',
-    pageId: 'volunteer',
     path: '/volunteer',
     icon: icon('ic_user'),
     children: ['/volunteer', '/volunteer/add'],
+  },
+  {
+    title: 'team-members',
+    path: '/team-members',
+    icon: icon('ic_group'),
+    children: ['/team-members', '/team-members/add'],
+  },
+  {
+    title: 'events',
+    path: '/events',
+    icon: icon('ic_events'),
+    children: ['/events', '/events/add'],
+  },
+  {
+    title: 'users',
+    path: '/users',
+    icon: <Face6Icon />,
+    children: ['/users', '/users/add'],
   },
   {
     title: 'testimonial',

@@ -7,8 +7,8 @@ import {
   setSelectedTestimonial,
 } from 'src/store/slices/testimonialSlice';
 import { fhelper } from 'src/_helpers';
+import { toastError } from '.';
 import axios from 'axios';
-import { toastError } from 'src/actions';
 
 export const getTestimonials = () => async (dispatch) => {
   try {

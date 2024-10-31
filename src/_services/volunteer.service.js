@@ -8,8 +8,8 @@ import {
 } from 'src/store/slices/volunteerSlice';
 import { fhelper } from 'src/_helpers';
 import axios from 'axios';
-import { toastError } from 'src/actions';
 import { skills } from 'src/_helpers/constants';
+import { toastError } from '.';
 
 export const getVolunteers = () => async (dispatch) => {
   try {
