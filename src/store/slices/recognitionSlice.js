@@ -5,9 +5,9 @@ export const recognitionInitDetails = {
   type: '',
   description: '',
   date: null,
-  imageUrl: '',
-  previewImageUrl: '',
-  imageUrl: '',
+  imageUrl: [],
+  previewImageUrl: [],
+  deleteUploadedImageUrl: [],
 };
 
 const initialState = {

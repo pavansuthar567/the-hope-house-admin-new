@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -20,14 +21,14 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import { deleteFaqs, getFaqss } from 'src/_services/faqs.service';
+import { fhelper } from 'src/_helpers';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
-import Scrollbar from 'src/components/scrollbar';
 import { Button } from 'src/components/button';
-import ConfirmationDialog from 'src/components/confirmation-dialog';
+import Scrollbar from 'src/components/scrollbar';
 import { setSelectedFaqs } from 'src/store/slices/faqsSlice';
-import { useNavigate } from 'react-router-dom';
+import { deleteFaqs, getFaqss } from 'src/_services/faqs.service';
+import ConfirmationDialog from 'src/components/confirmation-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -211,6 +212,10 @@ const FaqssView = () => {
                       <TableCell className="text-nowrap">Category</TableCell>
                       <TableCell>Question</TableCell>
                       <TableCell>Answer</TableCell>
+                      <TableCell className="text-nowrap">Created At</TableCell>
+                      <TableCell className="text-nowrap">Updated At</TableCell>
+                      <TableCell className="text-nowrap">Created By</TableCell>
+                      <TableCell className="text-nowrap">Updated By</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -222,6 +227,14 @@ const FaqssView = () => {
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
                             <TableCell>{x?.category}</TableCell>
                             <TableCell>{x?.question}</TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell
                               dangerouslySetInnerHTML={{
                                 __html: x?.answer,

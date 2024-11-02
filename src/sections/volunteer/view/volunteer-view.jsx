@@ -236,6 +236,10 @@ const Volunteer = () => {
                       <TableCell>Availability</TableCell>
                       <TableCell className="text-nowrap">Emergency Contact</TableCell>
                       <TableCell>Address</TableCell>
+                      <TableCell className="text-nowrap">Created At</TableCell>
+                      <TableCell className="text-nowrap">Updated At</TableCell>
+                      <TableCell className="text-nowrap">Created By</TableCell>
+                      <TableCell className="text-nowrap">Updated By</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -273,6 +277,14 @@ const Volunteer = () => {
                               {x?.address?.street}, {x?.address?.city}, {x?.address?.state},{' '}
                               {x?.address?.zipCode}
                             </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}

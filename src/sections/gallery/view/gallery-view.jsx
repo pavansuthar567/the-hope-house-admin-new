@@ -18,57 +18,68 @@ import {
   TableContainer,
   InputAdornment,
   TablePagination,
+  Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 import { fhelper } from 'src/_helpers';
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
 import { Button } from 'src/components/button';
 import Scrollbar from 'src/components/scrollbar';
 import ProgressiveImg from 'src/components/progressive-img';
+import { setPerPageCount, setSelectedGallery } from 'src/store/slices/gallerySlice';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
-import { setSelectedTeamMembers } from 'src/store/slices/teamMembersSlice';
-import { deleteTeamMembers, getTeamMembers } from 'src/_services/team-members.service';
+import { deleteGallery, getGalleries } from 'src/_services/gallery.service';
+import GalleryCard from './gallert-card';
+import NoData from 'src/components/no-data';
+import Grid from '@mui/material/Unstable_Grid2';
+import { perPageCountOptions } from 'src/_helpers/constants';
+import Pagination from 'src/components/pagination';
+import { fPageCount } from 'src/utils/format-number';
 
 // ----------------------------------------------------------------------
 
-const TeamMembers = () => {
+const Gallery = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [open, setOpen] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [filteredList, setFilteredList] = useState([]);
   const [searchedValue, setSearchedValue] = useState('');
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [selectedTeamMembersId, setSelectedTeamMembersId] = useState();
+  const [currentPageData, setCurrentPageData] = useState([]);
+  const [selectedGalleryId, setSelectedGalleryId] = useState();
 
-  const { teamMembersLoading, teamMembersList, crudTeamMembersLoading } = useSelector(
-    ({ teamMembers }) => teamMembers
+  const { galleryLoading, galleryList, crudGalleryLoading, perPageCount } = useSelector(
+    ({ gallery }) => gallery
   );
 
-  const searchKey = searchedValue?.trim()?.toLowerCase();
-  let filteredItems = teamMembersList?.filter((item) => {
-    return (
-      item?.firstName?.toLowerCase()?.includes(searchKey) ||
-      item?.lastName?.toLowerCase()?.includes(searchKey) ||
-      item?.email?.toLowerCase()?.includes(searchKey) ||
-      item?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
-      item?.skills?.some((skill) => skill.toLowerCase().includes(searchKey)) || // Adjusted this line
-      item?.address?.street?.toLowerCase()?.includes(searchKey) || // Check specific fields in address
-      item?.address?.city?.toLowerCase()?.includes(searchKey) ||
-      item?.address?.state?.toLowerCase()?.includes(searchKey) ||
-      item?.address?.zipCode?.toLowerCase()?.includes(searchKey) ||
-      item?.dateOfJoining?.toLowerCase()?.includes(searchKey)
-    );
-  });
+  useEffect(() => {
+    const searchKey = searchedValue?.trim()?.toLowerCase();
 
-  filteredItems = filteredItems?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    let filteredList = galleryList?.filter((item) => {
+      const matchesSearch =
+        item?.mission?.toLowerCase()?.includes(searchKey) ||
+        item?.caption?.toLowerCase()?.includes(searchKey) ||
+        item?.createdAt?.toLowerCase()?.includes(searchKey) ||
+        item?.createdBy?.toLowerCase()?.includes(searchKey) ||
+        item?.updatedBy?.toLowerCase()?.includes(searchKey) ||
+        item?.updatedAt?.toLowerCase()?.includes(searchKey);
+
+      return matchesSearch;
+    });
+
+    setFilteredList(filteredList);
+    const indexOfLastItem = page * perPageCount;
+    const indexOfFirstItem = indexOfLastItem - perPageCount;
+    const currentItems = filteredList?.slice(indexOfFirstItem, indexOfLastItem);
+    setCurrentPageData(currentItems);
+  }, [page, galleryList, perPageCount, searchedValue]);
 
   const loadData = useCallback(
     (cPage = page) => {
-      dispatch(getTeamMembers());
+      dispatch(getGalleries());
       setPage(cPage);
     },
     [page]
@@ -81,44 +92,62 @@ const TeamMembers = () => {
   const searchValueHandler = useCallback((event) => {
     const value = event.target.value;
     setSearchedValue(value);
-    setPage(0);
+    setPage(1);
   }, []);
 
   const handleChangePage = useCallback((event, newPage) => {
     setPage(newPage);
   }, []);
 
-  const handleChangeRowsPerPage = useCallback((event) => {
-    setPage(0);
-    setRowsPerPage(parseInt(event.target.value, 10));
-  }, []);
+  // const handleChangeRowsPerPage = useCallback((event) => {
+  //   setPage(0);
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  // }, []);
 
   const handlePopup = useCallback(
     (e, reason) => {
-      if (crudTeamMembersLoading && reason === 'backdropClick') return;
+      if (crudGalleryLoading && reason === 'backdropClick') return;
       setOpen(null);
-      setSelectedTeamMembersId();
+      setSelectedGalleryId();
     },
-    [crudTeamMembersLoading]
+    [crudGalleryLoading]
   );
 
   const handleEdit = useCallback(async () => {
-    const teamMembers = teamMembersList?.find((x) => x?._id === selectedTeamMembersId);
-    if (teamMembers) {
-      dispatch(setSelectedTeamMembers(teamMembers));
-      navigate(`/team-members/add?teamMembersId=${teamMembers?._id}`);
+    const gallery = galleryList?.find((x) => x?._id === selectedGalleryId);
+    if (gallery) {
+      dispatch(setSelectedGallery(gallery));
+      navigate(`/gallery/add?galleryId=${gallery?._id}`);
     }
-  }, [selectedTeamMembersId, teamMembersList]);
+  }, [selectedGalleryId, galleryList]);
 
   const handleDelete = useCallback(async () => {
-    const res = await dispatch(deleteTeamMembers(selectedTeamMembersId));
+    const res = await dispatch(deleteGallery(selectedGalleryId));
     if (res) {
-      const cPage = page !== 0 && filteredItems?.length === 1 ? page - 1 : page;
+      const cPage = page !== 0 && currentPageData?.length === 1 ? page - 1 : page;
       loadData(cPage);
       handlePopup();
       setDeleteDialog(false);
     }
-  }, [selectedTeamMembersId]);
+  }, [selectedGalleryId, currentPageData]);
+
+  const pageCount = (
+    <TextField
+      select
+      size="small"
+      value={perPageCount}
+      onChange={(e) => {
+        dispatch(setPerPageCount(e.target.value));
+        setPage(1);
+      }}
+    >
+      {perPageCountOptions?.map((option) => (
+        <MenuItem key={option?.value} value={option?.value}>
+          {option?.label}
+        </MenuItem>
+      ))}
+    </TextField>
+  );
 
   const renderPopup = useMemo(() => {
     return !!open ? (
@@ -133,17 +162,17 @@ const TeamMembers = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleEdit} disabled={crudTeamMembersLoading}>
+        <MenuItem onClick={handleEdit} disabled={crudGalleryLoading}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
         <MenuItem
           sx={{ color: 'error.main' }}
-          disabled={crudTeamMembersLoading}
+          disabled={crudGalleryLoading}
           onClick={() => setDeleteDialog(true)}
         >
-          {crudTeamMembersLoading ? (
+          {crudGalleryLoading ? (
             <Box
               sx={{
                 gap: '15px',
@@ -163,11 +192,11 @@ const TeamMembers = () => {
         </MenuItem>
       </Popover>
     ) : null;
-  }, [open, crudTeamMembersLoading]);
+  }, [open, crudGalleryLoading]);
 
   return (
     <Container>
-      {teamMembersLoading ? (
+      {galleryLoading ? (
         <div className="flex justify-center items-center h-full p-4">
           <Spinner />
         </div>
@@ -183,7 +212,7 @@ const TeamMembers = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="h4">TeamMember</Typography>
+            <Typography variant="h4">Gallery</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
               <TextField
                 size="small"
@@ -206,13 +235,88 @@ const TeamMembers = () => {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => navigate('/team-members/add')}
+                onClick={() => navigate('/gallery/add')}
               >
-                New TeamMember
+                New Gallery
               </Button>
             </Box>
           </Box>
-          <Card>
+          <Stack sx={{ height: '99%', display: 'flex', justifyContent: 'space-between' }}>
+            {galleryLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <Spinner />
+              </div>
+            ) : (
+              currentPageData?.length > 0 && (
+                <>
+                  <Grid container spacing={3}>
+                    {currentPageData?.map((x) => (
+                      <Grid key={x?._id} xs={12} sm={6}>
+                        <GalleryCard
+                          gallery={x}
+                          openDialog={deleteDialog}
+                          setOpenDialog={setDeleteDialog}
+                          setSelectedId={setSelectedGalleryId}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                  <Stack
+                    sx={{
+                      mb: 6,
+                      mt: 2,
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Stack
+                      sx={{
+                        mb: 6,
+                        mt: 2,
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                      }}
+                    >
+                      <Stack
+                        sx={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: 2,
+                        }}
+                      >
+                        <Stack sx={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                          <Typography variant="subtitle2">
+                            Products: {filteredList?.length}
+                          </Typography>
+                          {pageCount}
+                        </Stack>
+                      </Stack>
+                      <Pagination
+                        page={page}
+                        onChange={handleChangePage}
+                        className="flex justify-center items-center"
+                        count={fPageCount(filteredList?.length, perPageCount)}
+                      />
+                    </Stack>
+                  </Stack>
+                </>
+              )
+            )}
+            {(galleryList?.length === 0 || currentPageData?.length === 0) && !galleryLoading && (
+              <NoData>
+                {galleryList?.length === 0
+                  ? `Click the "New Gallery" button to get started.`
+                  : 'Clear all filters'}
+              </NoData>
+            )}
+          </Stack>
+          {/* <Card>
             <Box p={'3px'} />
             <Scrollbar>
               <TableContainer sx={{ overflow: 'unset' }}>
@@ -221,15 +325,8 @@ const TeamMembers = () => {
                     <TableRow>
                       <TableCell>Id</TableCell>
                       <TableCell>Image</TableCell>
-                      <TableCell className="text-nowrap">First Name</TableCell>
-                      <TableCell className="text-nowrap">Last Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell className="text-nowrap">Phone Number</TableCell>
-                      <TableCell>Role</TableCell>
-                      <TableCell>Bio</TableCell>
-                      <TableCell className="text-nowrap">Date Of Joining</TableCell>
-                      <TableCell>Skills</TableCell>
-                      <TableCell>Address</TableCell>
+                      <TableCell className="text-nowrap">Caption</TableCell>
+                      <TableCell className="text-nowrap">Mission</TableCell>
                       <TableCell className="text-nowrap">Created At</TableCell>
                       <TableCell className="text-nowrap">Updated At</TableCell>
                       <TableCell className="text-nowrap">Created By</TableCell>
@@ -241,34 +338,16 @@ const TeamMembers = () => {
                   <TableBody>
                     {filteredItems?.length
                       ? filteredItems?.map((x, i) => (
-                          <TableRow key={`teamMembers-${i}`}>
+                          <TableRow key={`gallery-${i}`}>
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
                             <TableCell className="overflow-hidden">
                               <ProgressiveImg
-                                src={x?.profilePictureUrl}
+                                src={x?.imageUrl}
                                 customClassName={'max-h-10 h-10 w-10 object-contain rounded'}
                               />
                             </TableCell>
-                            <TableCell>{x?.firstName}</TableCell>
-                            <TableCell>{x?.lastName}</TableCell>
-                            <TableCell>{x?.email}</TableCell>
-                            <TableCell>{x?.phoneNumber}</TableCell>
-                            <TableCell>{x?.role}</TableCell>
-                            <TableCell sx={{ minWidth: '200px' }}>{x?.bio}</TableCell>
-                            <TableCell className="text-nowrap">
-                              {fhelper.formatAndDisplayDate(new Date(x?.dateOfJoining))}
-                            </TableCell>
-                            <TableCell className="">
-                              {x?.skills?.map((x, i) => (
-                                <Label sx={{ m: 0 }} key={`skill-${x}-${i}`}>
-                                  {x}
-                                </Label>
-                              ))}
-                            </TableCell>
-                            <TableCell sx={{ minWidth: '300px' }}>
-                              {x?.address?.street}, {x?.address?.city}, {x?.address?.state},{' '}
-                              {x?.address?.zipCode}
-                            </TableCell>
+                            <TableCell>{x?.caption}</TableCell>
+                            <TableCell sx={{ minWidth: '150px' }}>{x?.mission}</TableCell>
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
                             </TableCell>
@@ -283,7 +362,7 @@ const TeamMembers = () => {
                                 icon="iconamoon:menu-kebab-vertical-bold"
                                 onClick={(e) => {
                                   setOpen(e.currentTarget);
-                                  setSelectedTeamMembersId(x?._id);
+                                  setSelectedGalleryId(x?._id);
                                 }}
                               />
                             </TableCell>
@@ -302,18 +381,18 @@ const TeamMembers = () => {
                 </Typography>
               ) : null}
             </Scrollbar>
-            {teamMembersList?.length > 5 ? (
+            {galleryList?.length > 5 ? (
               <TablePagination
                 page={page}
                 component="div"
                 rowsPerPage={rowsPerPage}
-                count={teamMembersList?.length}
+                count={galleryList?.length}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
                 onRowsPerPageChange={handleChangeRowsPerPage}
               />
             ) : null}
-          </Card>
+          </Card> */}
         </>
       )}
 
@@ -324,13 +403,13 @@ const TeamMembers = () => {
           open={deleteDialog}
           setOpen={setDeleteDialog}
           handleConfirm={handleDelete}
-          loading={crudTeamMembersLoading}
+          loading={crudGalleryLoading}
         >
-          Do you want to delete this teamMembers?
+          Do you want to delete this gallery?
         </ConfirmationDialog>
       ) : null}
     </Container>
   );
 };
 
-export default TeamMembers;
+export default Gallery;

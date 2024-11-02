@@ -5,6 +5,7 @@ import faqs from './slices/faqsSlice';
 import event from './slices/eventSlice';
 import quote from './slices/quoteSlice';
 import common from './slices/commonSlice';
+import gallery from './slices/gallerySlice';
 import volunteer from './slices/volunteerSlice';
 import teamMembers from './slices/teamMembersSlice';
 import testimonial from './slices/testimonialSlice';
@@ -18,6 +19,7 @@ const reducers = combineReducers({
   event,
   quote,
   common,
+  gallery,
   volunteer,
   teamMembers,
   recognition,

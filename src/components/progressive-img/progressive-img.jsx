@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import logo from '../../../public/assets/logo1.webp';
+import logo from '../../../public/assets/logo1.png';
 
 const ProgressiveImg = ({
   placeholderSrc = logo,
@@ -21,7 +21,7 @@ const ProgressiveImg = ({
   const customClass = useMemo(() => {
     return placeholderSrc && imgSrc === placeholderSrc
       ? `progressive-img-loading object-contain ${placeHolderClassName}`
-      : `poprogressive-img-loaded object-cover w-full h-[280px] ${customClassName}`;
+      : `poprogressive-img-loaded object-cover w-full h-[300px] ${customClassName}`;
   }, [imgSrc, placeholderSrc]);
 
   return <img {...{ src: imgSrc, ...props }} alt={props.alt || ''} className={` ${customClass}`} />;

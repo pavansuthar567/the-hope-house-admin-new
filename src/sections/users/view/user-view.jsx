@@ -28,6 +28,7 @@ import { Button } from 'src/components/button';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { setSelectedUser } from 'src/store/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { fhelper } from 'src/_helpers';
 
 // ----------------------------------------------------------------------
 
@@ -209,6 +210,10 @@ const UsersView = () => {
                       <TableCell>Id</TableCell>
                       <TableCell className="text-nowrap">Name</TableCell>
                       <TableCell>Email</TableCell>
+                      <TableCell className="text-nowrap">Created At</TableCell>
+                      <TableCell className="text-nowrap">Updated At</TableCell>
+                      <TableCell className="text-nowrap">Created By</TableCell>
+                      <TableCell className="text-nowrap">Updated By</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -220,6 +225,14 @@ const UsersView = () => {
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
                             <TableCell>{x?.name}</TableCell>
                             <TableCell>{x?.email}</TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}
