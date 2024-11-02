@@ -20,21 +20,18 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import { deleteTeamMembers, getTeamMembers } from 'src/_services/team-members.service';
+import { deleteFaqs, getFaqss } from 'src/_services/faqs.service';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
 import Scrollbar from 'src/components/scrollbar';
 import { Button } from 'src/components/button';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
-import { setSelectedTeamMembers } from 'src/store/slices/teamMembersSlice';
-import Label from 'src/components/label';
-import { fhelper } from 'src/_helpers';
+import { setSelectedFaqs } from 'src/store/slices/faqsSlice';
 import { useNavigate } from 'react-router-dom';
-import ProgressiveImg from 'src/components/progressive-img';
 
 // ----------------------------------------------------------------------
 
-const TeamMembers = () => {
+const FaqssView = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
@@ -42,25 +39,16 @@ const TeamMembers = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchedValue, setSearchedValue] = useState('');
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [selectedTeamMembersId, setSelectedTeamMembersId] = useState();
+  const [selectedFaqsId, setSelectedFaqsId] = useState();
 
-  const { teamMembersLoading, teamMembersList, crudTeamMembersLoading } = useSelector(
-    ({ teamMembers }) => teamMembers
-  );
+  const { faqsLoading, faqsList, crudFaqsLoading } = useSelector(({ faqs }) => faqs);
 
   const searchKey = searchedValue?.trim()?.toLowerCase();
-  let filteredItems = teamMembersList?.filter((item) => {
+  let filteredItems = faqsList?.filter((item) => {
     return (
-      item?.firstName?.toLowerCase()?.includes(searchKey) ||
-      item?.lastName?.toLowerCase()?.includes(searchKey) ||
-      item?.email?.toLowerCase()?.includes(searchKey) ||
-      item?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
-      item?.skills?.some((skill) => skill.toLowerCase().includes(searchKey)) || // Adjusted this line
-      item?.address?.street?.toLowerCase()?.includes(searchKey) || // Check specific fields in address
-      item?.address?.city?.toLowerCase()?.includes(searchKey) ||
-      item?.address?.state?.toLowerCase()?.includes(searchKey) ||
-      item?.address?.zipCode?.toLowerCase()?.includes(searchKey) ||
-      item?.dateOfJoining?.toLowerCase()?.includes(searchKey)
+      item?.category?.toLowerCase()?.includes(searchKey) ||
+      item?.question?.toLowerCase()?.includes(searchKey) ||
+      item?.answer?.toLowerCase()?.includes(searchKey)
     );
   });
 
@@ -68,7 +56,7 @@ const TeamMembers = () => {
 
   const loadData = useCallback(
     (cPage = page) => {
-      dispatch(getTeamMembers());
+      dispatch(getFaqss());
       setPage(cPage);
     },
     [page]
@@ -95,30 +83,30 @@ const TeamMembers = () => {
 
   const handlePopup = useCallback(
     (e, reason) => {
-      if (crudTeamMembersLoading && reason === 'backdropClick') return;
+      if (crudFaqsLoading && reason === 'backdropClick') return;
       setOpen(null);
-      setSelectedTeamMembersId();
+      setSelectedFaqsId();
     },
-    [crudTeamMembersLoading]
+    [crudFaqsLoading]
   );
 
   const handleEdit = useCallback(async () => {
-    const teamMembers = teamMembersList?.find((x) => x?._id === selectedTeamMembersId);
-    if (teamMembers) {
-      dispatch(setSelectedTeamMembers(teamMembers));
-      navigate(`/team-members/add?teamMembersId=${teamMembers?._id}`);
+    const faqs = faqsList?.find((x) => x?._id === selectedFaqsId);
+    if (faqs) {
+      dispatch(setSelectedFaqs(faqs));
+      navigate(`/faqs/add?faqsId=${faqs?._id}`);
     }
-  }, [selectedTeamMembersId, teamMembersList]);
+  }, [selectedFaqsId, faqsList]);
 
   const handleDelete = useCallback(async () => {
-    const res = await dispatch(deleteTeamMembers(selectedTeamMembersId));
+    const res = await dispatch(deleteFaqs(selectedFaqsId));
     if (res) {
       const cPage = page !== 0 && filteredItems?.length === 1 ? page - 1 : page;
       loadData(cPage);
       handlePopup();
       setDeleteDialog(false);
     }
-  }, [selectedTeamMembersId]);
+  }, [selectedFaqsId]);
 
   const renderPopup = useMemo(() => {
     return !!open ? (
@@ -133,17 +121,17 @@ const TeamMembers = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleEdit} disabled={crudTeamMembersLoading}>
+        <MenuItem onClick={handleEdit} disabled={crudFaqsLoading}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
         <MenuItem
           sx={{ color: 'error.main' }}
-          disabled={crudTeamMembersLoading}
+          disabled={crudFaqsLoading}
           onClick={() => setDeleteDialog(true)}
         >
-          {crudTeamMembersLoading ? (
+          {crudFaqsLoading ? (
             <Box
               sx={{
                 gap: '15px',
@@ -163,11 +151,11 @@ const TeamMembers = () => {
         </MenuItem>
       </Popover>
     ) : null;
-  }, [open, crudTeamMembersLoading]);
+  }, [open, crudFaqsLoading]);
 
   return (
     <Container>
-      {teamMembersLoading ? (
+      {faqsLoading ? (
         <div className="flex justify-center items-center h-full p-4">
           <Spinner />
         </div>
@@ -183,7 +171,7 @@ const TeamMembers = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="h4">TeamMember</Typography>
+            <Typography variant="h4">Faqs</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
               <TextField
                 size="small"
@@ -206,9 +194,9 @@ const TeamMembers = () => {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => navigate('/team-members/add')}
+                onClick={() => navigate('/faqs/add')}
               >
-                New TeamMember
+                New Faqs
               </Button>
             </Box>
           </Box>
@@ -220,16 +208,9 @@ const TeamMembers = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Id</TableCell>
-                      <TableCell>Image</TableCell>
-                      <TableCell className="text-nowrap">First Name</TableCell>
-                      <TableCell className="text-nowrap">Last Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell className="text-nowrap">Phone Number</TableCell>
-                      <TableCell>Role</TableCell>
-                      <TableCell>Bio</TableCell>
-                      <TableCell className="text-nowrap">Date Of Joining</TableCell>
-                      <TableCell>Skills</TableCell>
-                      <TableCell>Address</TableCell>
+                      <TableCell className="text-nowrap">Category</TableCell>
+                      <TableCell>Question</TableCell>
+                      <TableCell>Answer</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -237,41 +218,22 @@ const TeamMembers = () => {
                   <TableBody>
                     {filteredItems?.length
                       ? filteredItems?.map((x, i) => (
-                          <TableRow key={`teamMembers-${i}`}>
+                          <TableRow key={`faqs-${i}`}>
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
-                            <TableCell className="overflow-hidden">
-                              <ProgressiveImg
-                                src={x?.profilePictureUrl}
-                                customClassName={'max-h-10 h-10 w-10 object-contain rounded'}
-                              />
-                            </TableCell>
-                            <TableCell>{x?.firstName}</TableCell>
-                            <TableCell>{x?.lastName}</TableCell>
-                            <TableCell>{x?.email}</TableCell>
-                            <TableCell>{x?.phoneNumber}</TableCell>
-                            <TableCell>{x?.role}</TableCell>
-                            <TableCell sx={{ minWidth: '200px' }}>{x?.bio}</TableCell>
-                            <TableCell className="text-nowrap">
-                              {fhelper.formatAndDisplayDate(new Date(x?.dateOfJoining))}
-                            </TableCell>
-                            <TableCell className="">
-                              {x?.skills?.map((x, i) => (
-                                <Label sx={{ m: 0 }} key={`skill-${x}-${i}`}>
-                                  {x}
-                                </Label>
-                              ))}
-                            </TableCell>
-                            <TableCell sx={{ minWidth: '300px' }}>
-                              {x?.address?.street}, {x?.address?.city}, {x?.address?.state},{' '}
-                              {x?.address?.zipCode}
-                            </TableCell>
+                            <TableCell>{x?.category}</TableCell>
+                            <TableCell>{x?.question}</TableCell>
+                            <TableCell
+                              dangerouslySetInnerHTML={{
+                                __html: x?.answer,
+                              }}
+                            ></TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}
                                 icon="iconamoon:menu-kebab-vertical-bold"
                                 onClick={(e) => {
                                   setOpen(e.currentTarget);
-                                  setSelectedTeamMembersId(x?._id);
+                                  setSelectedFaqsId(x?._id);
                                 }}
                               />
                             </TableCell>
@@ -290,12 +252,12 @@ const TeamMembers = () => {
                 </Typography>
               ) : null}
             </Scrollbar>
-            {teamMembersList?.length > 5 ? (
+            {faqsList?.length > 5 ? (
               <TablePagination
                 page={page}
                 component="div"
                 rowsPerPage={rowsPerPage}
-                count={teamMembersList?.length}
+                count={faqsList?.length}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
                 onRowsPerPageChange={handleChangeRowsPerPage}
@@ -312,13 +274,13 @@ const TeamMembers = () => {
           open={deleteDialog}
           setOpen={setDeleteDialog}
           handleConfirm={handleDelete}
-          loading={crudTeamMembersLoading}
+          loading={crudFaqsLoading}
         >
-          Do you want to delete this teamMembers?
+          Do you want to delete this faqs?
         </ConfirmationDialog>
       ) : null}
     </Container>
   );
 };
 
-export default TeamMembers;
+export default FaqssView;
