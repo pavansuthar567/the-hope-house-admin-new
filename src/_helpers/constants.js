@@ -81,6 +81,21 @@ export const perPageCountOptions = [
   },
 ];
 
+export const faqsCategories = [
+  {
+    label: 'General',
+    value: 'General',
+  },
+  {
+    label: 'Donations',
+    value: 'Donations',
+  },
+  {
+    label: 'Volunteering',
+    value: 'Volunteering',
+  },
+];
+
 export const ITEM_HEIGHT = 48;
 export const ITEM_PADDING_TOP = 8;
 

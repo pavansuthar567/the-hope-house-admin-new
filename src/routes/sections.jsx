@@ -18,6 +18,14 @@ export const EventsPage = lazy(() => import('src/pages/events/events'));
 export const AddEventsPage = lazy(() => import('src/pages/events/add'));
 export const UserPage = lazy(() => import('src/pages/users/users'));
 export const AddUserPage = lazy(() => import('src/pages/users/add'));
+export const AddFaqsPage = lazy(() => import('src/pages/faqs/add'));
+export const FaqsPage = lazy(() => import('src/pages/faqs/faqs'));
+export const AddQuotePage = lazy(() => import('src/pages/quote/add'));
+export const QuotePage = lazy(() => import('src/pages/quote/quote'));
+export const AddHomePage = lazy(() => import('src/pages/quote/add'));
+export const HomePage = lazy(() => import('src/pages/quote/quote'));
+export const AddRecognitionPage = lazy(() => import('src/pages/recognition/add'));
+export const RecognitionPage = lazy(() => import('src/pages/recognition/recognition'));
 
 // ----------------------------------------------------------------------
 
@@ -118,6 +126,70 @@ export default function Router() {
           element: (
             // <ProtectedRoutes pageId={'volunteer'}>
             <AddTestimonialPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'faqs',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <FaqsPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/faqs/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddFaqsPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'quote',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <QuotePage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/quote/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddQuotePage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'home',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <HomePage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/home/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddHomePage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'recognition',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <RecognitionPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/recognition/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddRecognitionPage />
             // </ProtectedRoutes>
           ),
         },

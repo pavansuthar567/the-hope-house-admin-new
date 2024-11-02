@@ -11,6 +11,10 @@
 // import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
 // import InsertEmoticonTwoToneIcon from '@mui/icons-material/InsertEmoticonTwoTone';
 import Face6Icon from '@mui/icons-material/Face6';
+import QuizTwoToneIcon from '@mui/icons-material/QuizTwoTone';
+import FormatQuoteTwoToneIcon from '@mui/icons-material/FormatQuoteTwoTone';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
 
 // import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
@@ -59,6 +63,34 @@ const navConfig = [
     path: '/testimonial',
     icon: icon('ic_user'),
     children: ['/testimonial', '/testimonial/add'],
+  },
+  {
+    title: 'faqs',
+    pageId: 'faqs',
+    path: '/faqs',
+    icon: <QuizTwoToneIcon />,
+    children: ['/faqs', '/faqs/add'],
+  },
+  {
+    title: 'quote',
+    pageId: 'quote',
+    path: '/quote',
+    icon: <FormatQuoteTwoToneIcon />,
+    children: ['/quote', '/quote/add'],
+  },
+  {
+    title: 'home',
+    pageId: 'home',
+    path: '/home',
+    icon: <HomeTwoToneIcon />,
+    children: ['/home', '/home/add'],
+  },
+  {
+    title: 'recognition',
+    pageId: 'recognition',
+    path: '/recognition',
+    icon: <WorkspacePremiumTwoToneIcon />,
+    children: ['/recognition', '/recognition/add'],
   },
   // {
   //   title: 'brand',
