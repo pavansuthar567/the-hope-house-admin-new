@@ -100,6 +100,13 @@ const navConfig = [
     icon: <InsertPhotoTwoToneIcon />,
     children: ['/gallery', '/gallery/add'],
   },
+  {
+    title: 'blog',
+    pageId: 'blog',
+    path: '/blog',
+    icon: icon('ic_user'),
+    children: ['/blog', '/blog/add'],
+  },
   // {
   //   title: 'brand',
   //   pageId: 'slider',
