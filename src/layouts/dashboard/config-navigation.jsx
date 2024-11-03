@@ -16,6 +16,7 @@ import FormatQuoteTwoToneIcon from '@mui/icons-material/FormatQuoteTwoTone';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
 import InsertPhotoTwoToneIcon from '@mui/icons-material/InsertPhotoTwoTone';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 
 // import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
@@ -104,7 +105,7 @@ const navConfig = [
     title: 'blog',
     pageId: 'blog',
     path: '/blog',
-    icon: icon('ic_user'),
+    icon: <NewspaperIcon />,
     children: ['/blog', '/blog/add'],
   },
   // {
