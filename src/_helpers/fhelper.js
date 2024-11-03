@@ -164,7 +164,8 @@ const formatAndDisplayDate = (date) => {
   const day = d.getDate().toString().padStart(2, '0');
   const year = d.getFullYear();
 
-  return `${month}-${day}-${year}`;
+  if (month && day && year) return `${month}-${day}-${year}`;
+  return 'INVALID';
 };
 
 const { oneWeekAgo, oneMonthAgo, threeMonthsAgo, sixMonthsAgo, oneYearAgo } =

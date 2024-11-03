@@ -1,50 +1,50 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import {
+  setGalleryList,
+  setGalleryLoading,
+  setSelectedGallery,
+  setCrudGalleryLoading,
+} from 'src/store/slices/gallerySlice';
 import { toastError } from '.';
 import { fhelper } from 'src/_helpers';
-import {
-  setRecognitionList,
-  setRecognitionLoading,
-  setSelectedRecognition,
-  setCrudRecognitionLoading,
-} from 'src/store/slices/recognitionSlice';
 import { deleteFile, fileUpload } from './upload.service';
 
-export const getRecognitions = () => async (dispatch) => {
+export const getGalleries = () => async (dispatch) => {
   try {
-    dispatch(setRecognitionLoading(true));
-    const res = await axios.get('recognition');
+    dispatch(setGalleryLoading(true));
+    const res = await axios.get('gallery');
     const updated = res?.data?.data?.map((x, i) => ({ srNo: i + 1, ...x }));
-    await dispatch(setRecognitionList(fhelper.sortByField(updated) || []));
+    await dispatch(setGalleryList(fhelper.sortByField(updated) || []));
     return true;
   } catch (e) {
     toastError(e);
     return false;
   } finally {
-    dispatch(setRecognitionLoading(false));
+    dispatch(setGalleryLoading(false));
   }
 };
 
-export const deleteRecognition = (id) => async (dispatch) => {
+export const deleteGallery = (id) => async (dispatch) => {
   try {
-    dispatch(setCrudRecognitionLoading(true));
-    const res = await axios.delete(`recognition/${id}`);
+    dispatch(setCrudGalleryLoading(true));
+    const res = await axios.delete(`gallery/${id}`);
     if (res) {
-      toast.success('Recognition deleted successfully');
+      toast.success('Gallery deleted successfully');
       return true;
     } else return false;
   } catch (e) {
     toastError(e);
     return false;
   } finally {
-    dispatch(setCrudRecognitionLoading(false));
+    dispatch(setCrudGalleryLoading(false));
   }
 };
 
-export const createRecognition = (payload) => async (dispatch) => {
+export const createGallery = (payload) => async (dispatch) => {
   try {
-    dispatch(setCrudRecognitionLoading(true));
+    dispatch(setCrudGalleryLoading(true));
     let obj = { ...payload };
     let urls = [];
 
@@ -63,10 +63,10 @@ export const createRecognition = (payload) => async (dispatch) => {
     }
 
     delete obj.deleteUploadedImageUrl;
-    const res = await axios.post('recognition', obj);
+    const res = await axios.post('gallery', obj);
 
     if (res) {
-      toast.success('Recognition inserted successfully');
+      toast.success('Gallery inserted successfully');
       return true;
     }
     return false;
@@ -74,16 +74,16 @@ export const createRecognition = (payload) => async (dispatch) => {
     toastError(e);
     return false;
   } finally {
-    dispatch(setCrudRecognitionLoading(false));
+    dispatch(setCrudGalleryLoading(false));
   }
 };
 
-export const updateRecognition = (obj) => async (dispatch) => {
+export const updateGallery = (obj) => async (dispatch) => {
   try {
     if (obj && obj?._id) {
       const { _id, __v, ...payload } = obj;
       if (_id) {
-        dispatch(setCrudRecognitionLoading(true));
+        dispatch(setCrudGalleryLoading(true));
         let obj = { ...payload };
         let urls = [];
 
@@ -110,13 +110,13 @@ export const updateRecognition = (obj) => async (dispatch) => {
           obj.imageUrl = obj.imageUrl?.[0];
         }
         delete obj.deleteUploadedImageUrl;
-        const res = await axios.put(`recognition/${_id}`, obj);
+        const res = await axios.put(`gallery/${_id}`, obj);
 
         if (res) {
-          toast.success('Recognition updated successfully');
+          toast.success('Gallery updated successfully');
           return true;
         } else {
-          toast.success('Recognition Id is required');
+          toast.success('Gallery Id is required');
           return false;
         }
       }
@@ -127,14 +127,14 @@ export const updateRecognition = (obj) => async (dispatch) => {
     toastError(e);
     return false;
   } finally {
-    dispatch(setCrudRecognitionLoading(false));
+    dispatch(setCrudGalleryLoading(false));
   }
 };
 
-export const getRecognition = (id) => async (dispatch) => {
+export const getGallery = (id) => async (dispatch) => {
   try {
-    dispatch(setRecognitionLoading(true));
-    const res = await axios.get(`recognition/${id}`);
+    dispatch(setGalleryLoading(true));
+    const res = await axios.get(`gallery/${id}`);
 
     if (res) {
       let data = { ...res?.data?.data };
@@ -156,7 +156,7 @@ export const getRecognition = (id) => async (dispatch) => {
         }));
       }
 
-      dispatch(setSelectedRecognition(data));
+      dispatch(setSelectedGallery(data));
       return res;
     }
 
@@ -165,6 +165,6 @@ export const getRecognition = (id) => async (dispatch) => {
     toastError(e);
     return false;
   } finally {
-    dispatch(setRecognitionLoading(false));
+    dispatch(setGalleryLoading(false));
   }
 };

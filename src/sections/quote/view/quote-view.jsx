@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -20,14 +21,14 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import { deleteQuote, getQuotes } from 'src/_services/quote.service';
+import { fhelper } from 'src/_helpers';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
 import Scrollbar from 'src/components/scrollbar';
 import { Button } from 'src/components/button';
-import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { setSelectedQuote } from 'src/store/slices/quoteSlice';
-import { useNavigate } from 'react-router-dom';
+import ConfirmationDialog from 'src/components/confirmation-dialog';
+import { deleteQuote, getQuotes } from 'src/_services/quote.service';
 
 // ----------------------------------------------------------------------
 
@@ -213,6 +214,10 @@ const QuoteView = () => {
                       <TableCell>Author</TableCell>
                       <TableCell className="text-nowrap">Category</TableCell>
                       <TableCell>Source</TableCell>
+                      <TableCell className="text-nowrap">Created At</TableCell>
+                      <TableCell className="text-nowrap">Updated At</TableCell>
+                      <TableCell className="text-nowrap">Created By</TableCell>
+                      <TableCell className="text-nowrap">Updated By</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -226,6 +231,14 @@ const QuoteView = () => {
                             <TableCell>{x?.author}</TableCell>
                             <TableCell>{x?.category}</TableCell>
                             <TableCell>{x?.source}</TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -20,16 +21,15 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import { deleteRecognition, getRecognitions } from 'src/_services/recognition.service';
+import { fhelper } from 'src/_helpers';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
-import Scrollbar from 'src/components/scrollbar';
 import { Button } from 'src/components/button';
+import Scrollbar from 'src/components/scrollbar';
+import ProgressiveImg from 'src/components/progressive-img';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { setSelectedRecognition } from 'src/store/slices/recognitionSlice';
-import { fhelper } from 'src/_helpers';
-import { useNavigate } from 'react-router-dom';
-import ProgressiveImg from 'src/components/progressive-img';
+import { deleteRecognition, getRecognitions } from 'src/_services/recognition.service';
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +53,11 @@ const Recognition = () => {
       item?.title?.toLowerCase()?.includes(searchKey) ||
       item?.type?.toLowerCase()?.includes(searchKey) ||
       item?.description?.toLowerCase()?.includes(searchKey) ||
-      item?.date?.toLowerCase()?.includes(searchKey)
+      item?.date?.toLowerCase()?.includes(searchKey) ||
+      item?.createdAt?.toLowerCase()?.includes(searchKey) ||
+      item?.createdBy?.toLowerCase()?.includes(searchKey) ||
+      item?.updatedBy?.toLowerCase()?.includes(searchKey) ||
+      item?.updatedAt?.toLowerCase()?.includes(searchKey)
     );
   });
 
@@ -218,6 +222,10 @@ const Recognition = () => {
                       <TableCell className="text-nowrap">Type</TableCell>
                       <TableCell>Description</TableCell>
                       <TableCell className="text-nowrap">Date</TableCell>
+                      <TableCell className="text-nowrap">Created At</TableCell>
+                      <TableCell className="text-nowrap">Updated At</TableCell>
+                      <TableCell className="text-nowrap">Created By</TableCell>
+                      <TableCell className="text-nowrap">Updated By</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -229,16 +237,24 @@ const Recognition = () => {
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
                             <TableCell className="overflow-hidden">
                               <ProgressiveImg
-                                src={x?.profilePictureUrl}
+                                src={x?.imageUrl}
                                 customClassName={'max-h-10 h-10 w-10 object-contain rounded'}
                               />
                             </TableCell>
-                            <TableCell>{x?.title}</TableCell>
+                            <TableCell sx={{ minWidth: '150px' }}>{x?.title}</TableCell>
                             <TableCell>{x?.type}</TableCell>
-                            <TableCell>{x?.description}</TableCell>
+                            <TableCell sx={{ minWidth: '400px' }}>{x?.description}</TableCell>
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.date))}
                             </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}

@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
 import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import Stack from '@mui/material/Stack';
@@ -9,58 +9,42 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import { Card, Box, TextField } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import {
-  createRecognition,
-  getRecognition,
-  updateRecognition,
-} from 'src/_services/recognition.service';
+import { getGallery, createGallery, updateGallery } from 'src/_services/gallery.service';
 import Spinner from 'src/components/spinner';
 import { FileDrop } from 'src/components/file-drop';
 import { LoadingButton } from 'src/components/button';
-import { recognitionInitDetails, setSelectedRecognition } from 'src/store/slices/recognitionSlice';
+import { galleryInitDetails, setSelectedGallery } from 'src/store/slices/gallerySlice';
 
 // ----------------------------------------------------------------------
 
 const validationSchema = Yup.object().shape({
-  title: Yup.string()
-    .max(100, 'Title must be 100 characters or less')
-    .required('Title is required'),
-
-  type: Yup.string().required('Type is required'),
-  description: Yup.string()
-    .min(50, 'Title must be 100 characters or less')
-    .max(100, 'Title must be 100 characters or less')
-    .required('Description is required'),
-  date: Yup.date()
-    .required('Date is required')
-    .max(new Date(), 'Date must be in the past or today'),
+  mission: Yup.string()
+    .max(100, 'Mission must be 100 characters or less')
+    .required('Mission is required'),
+  caption: Yup.string().required('Type is required'),
   imageUrl: Yup.array().min(1).required('Image URL is required'),
 });
 
 // ----------------------------------------------------------------------
 
-export default function AddRecognition() {
+export default function AddGallery() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const recognitionId = searchParams.get('recognitionId');
+  const galleryId = searchParams.get('galleryId');
 
-  const { recognitionLoading, crudRecognitionLoading, selectedRecognition } = useSelector(
-    ({ recognition }) => recognition
+  const { galleryLoading, crudGalleryLoading, selectedGallery } = useSelector(
+    ({ gallery }) => gallery
   );
 
   useEffect(() => {
-    if (recognitionId) dispatch(getRecognition(recognitionId));
-  }, [recognitionId]);
+    if (galleryId) dispatch(getGallery(galleryId));
+  }, [galleryId]);
 
   useEffect(() => {
-    return () => dispatch(setSelectedRecognition(recognitionInitDetails));
+    return () => dispatch(setSelectedGallery(galleryInitDetails));
   }, []);
 
   const onSubmit = useCallback(async (fields, { resetForm }) => {
@@ -71,14 +55,14 @@ export default function AddRecognition() {
     delete payload.previewImageUrl;
     delete payload.createdAt;
     if (payload?._id) {
-      res = await dispatch(updateRecognition(payload));
+      res = await dispatch(updateGallery(payload));
     } else {
-      res = await dispatch(createRecognition(payload));
+      res = await dispatch(createGallery(payload));
     }
     if (res) {
       resetForm();
-      dispatch(setSelectedRecognition(recognitionInitDetails));
-      navigate('/recognition');
+      dispatch(setSelectedGallery(galleryInitDetails));
+      navigate('/gallery');
     }
   }, []);
 
@@ -94,7 +78,7 @@ export default function AddRecognition() {
   } = useFormik({
     onSubmit,
     enableReinitialize: true,
-    initialValues: selectedRecognition,
+    initialValues: selectedGallery,
     validationSchema,
   });
 
@@ -102,7 +86,7 @@ export default function AddRecognition() {
     <>
       <Container sx={{ height: '100%' }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h4">Recognition</Typography>
+          <Typography variant="h4">Gallery</Typography>
         </Box>
         <Stack
           sx={{
@@ -113,7 +97,7 @@ export default function AddRecognition() {
             overflow: 'initial',
           }}
         >
-          {recognitionLoading ? (
+          {galleryLoading ? (
             <div className="flex justify-center items-center h-full">
               <Spinner />
             </div>
@@ -124,9 +108,7 @@ export default function AddRecognition() {
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Details</Typography>
 
-                    <Typography variant="body2">
-                      Title, Type, Description, Date, Image...
-                    </Typography>
+                    <Typography variant="body2">Caption, Mission, Image...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -144,13 +126,13 @@ export default function AddRecognition() {
                             sx={{
                               width: '100%',
                             }}
+                            name="caption"
+                            label="Caption"
                             onBlur={handleBlur}
-                            name="title"
-                            label="Title"
                             onChange={handleChange}
-                            value={values?.title || ''}
-                            error={!!(touched?.title && errors?.title)}
-                            helperText={touched?.title && errors?.title ? errors?.title : ''}
+                            value={values?.caption || ''}
+                            error={!!(touched?.caption && errors?.caption)}
+                            helperText={touched?.caption && errors?.caption ? errors?.caption : ''}
                           />
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
@@ -158,50 +140,14 @@ export default function AddRecognition() {
                             sx={{
                               width: '100%',
                             }}
+                            name="mission"
+                            label="Mission"
                             onBlur={handleBlur}
-                            name="type"
-                            label="Type"
                             onChange={handleChange}
-                            value={values?.type || ''}
-                            error={!!(touched?.type && errors?.type)}
-                            helperText={touched?.type && errors?.type ? errors?.type : ''}
+                            value={values?.mission || ''}
+                            error={!!(touched?.mission && errors?.mission)}
+                            helperText={touched?.mission && errors?.mission ? errors?.mission : ''}
                           />
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            sx={{
-                              width: '100%',
-                            }}
-                            onBlur={handleBlur}
-                            name="description"
-                            label="Description"
-                            onChange={handleChange}
-                            value={values?.description || ''}
-                            error={!!(touched?.description && errors?.description)}
-                            helperText={
-                              touched?.description && errors?.description ? errors?.description : ''
-                            }
-                          />
-                        </Grid>
-                        <Grid xs={12} sm={6} md={6} m={0}>
-                          <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DemoContainer components={['DatePicker']} sx={{ pt: 1 }}>
-                              <DatePicker
-                                sx={{ width: '100%' }}
-                                label="Date"
-                                value={new Date(values.date) || null}
-                                onChange={(newValue) => setFieldValue('date', newValue)}
-                                slotProps={{
-                                  textField: {
-                                    error: !!(touched.date && errors.date),
-                                    helperText: touched.date && errors.date ? errors.date : '',
-                                  },
-                                }}
-                              />
-                            </DemoContainer>
-                          </LocalizationProvider>
                         </Grid>
                       </Grid>
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
@@ -217,11 +163,11 @@ export default function AddRecognition() {
                               setFieldValue,
                               ...restFormik,
                             }}
-                            deleteKey={'deleteUploadedImageUrl'}
                             mediaLimit={1}
                             fileKey={'imageUrl'}
                             previewKey={'previewImageUrl'}
-                            loading={crudRecognitionLoading || recognitionLoading}
+                            deleteKey={'deleteUploadedImageUrl'}
+                            loading={crudGalleryLoading || galleryLoading}
                           />
                         </Grid>
                       </Grid>
@@ -232,9 +178,9 @@ export default function AddRecognition() {
                         type={'submit'}
                         variant="contained"
                         onClick={handleSubmit}
-                        loading={crudRecognitionLoading}
+                        loading={crudGalleryLoading}
                       >
-                        {recognitionId ? 'Update' : 'Save'} Changes
+                        {galleryId ? 'Update' : 'Save'} Changes
                       </LoadingButton>
                     </Stack>
                   </Grid>

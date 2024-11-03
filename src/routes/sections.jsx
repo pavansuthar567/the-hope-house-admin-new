@@ -26,6 +26,8 @@ export const AddHomePage = lazy(() => import('src/pages/quote/add'));
 export const HomePage = lazy(() => import('src/pages/quote/quote'));
 export const AddRecognitionPage = lazy(() => import('src/pages/recognition/add'));
 export const RecognitionPage = lazy(() => import('src/pages/recognition/recognition'));
+export const AddGalleryPage = lazy(() => import('src/pages/gallery/add'));
+export const GalleryPage = lazy(() => import('src/pages/gallery/gallery'));
 
 // ----------------------------------------------------------------------
 
@@ -190,6 +192,22 @@ export default function Router() {
           element: (
             // <ProtectedRoutes pageId={'volunteer'}>
             <AddRecognitionPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'gallery',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <GalleryPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/gallery/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddGalleryPage />
             // </ProtectedRoutes>
           ),
         },

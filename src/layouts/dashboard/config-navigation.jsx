@@ -15,6 +15,7 @@ import QuizTwoToneIcon from '@mui/icons-material/QuizTwoTone';
 import FormatQuoteTwoToneIcon from '@mui/icons-material/FormatQuoteTwoTone';
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
+import InsertPhotoTwoToneIcon from '@mui/icons-material/InsertPhotoTwoTone';
 
 // import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
@@ -78,19 +79,26 @@ const navConfig = [
     icon: <FormatQuoteTwoToneIcon />,
     children: ['/quote', '/quote/add'],
   },
-  {
-    title: 'home',
-    pageId: 'home',
-    path: '/home',
-    icon: <HomeTwoToneIcon />,
-    children: ['/home', '/home/add'],
-  },
+  // {
+  //   title: 'home',
+  //   pageId: 'home',
+  //   path: '/home',
+  //   icon: <HomeTwoToneIcon />,
+  //   children: ['/home', '/home/add'],
+  // },
   {
     title: 'recognition',
     pageId: 'recognition',
     path: '/recognition',
     icon: <WorkspacePremiumTwoToneIcon />,
     children: ['/recognition', '/recognition/add'],
+  },
+  {
+    title: 'gallery',
+    pageId: 'gallery',
+    path: '/gallery',
+    icon: <InsertPhotoTwoToneIcon />,
+    children: ['/gallery', '/gallery/add'],
   },
   // {
   //   title: 'brand',

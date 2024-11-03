@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -20,18 +21,16 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import { deleteEvent } from 'src/_services/events.service';
+import { fhelper } from 'src/_helpers';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
-import Scrollbar from 'src/components/scrollbar';
 import { Button } from 'src/components/button';
-import ConfirmationDialog from 'src/components/confirmation-dialog';
-import { setSelectedEvent } from 'src/store/slices/eventSlice';
-import Label from 'src/components/label';
-import { fhelper } from 'src/_helpers';
-import { useNavigate } from 'react-router-dom';
-import ProgressiveImg from 'src/components/progressive-img';
+import Scrollbar from 'src/components/scrollbar';
 import { getEvents } from 'src/_services/events.service';
+import { deleteEvent } from 'src/_services/events.service';
+import ProgressiveImg from 'src/components/progressive-img';
+import { setSelectedEvent } from 'src/store/slices/eventSlice';
+import ConfirmationDialog from 'src/components/confirmation-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -235,6 +234,10 @@ const Event = () => {
                       <TableCell className="text-nowrap">Reg. Link</TableCell>
                       <TableCell>Status</TableCell>
                       <TableCell>Location</TableCell>
+                      <TableCell className="text-nowrap">Created At</TableCell>
+                      <TableCell className="text-nowrap">Updated At</TableCell>
+                      <TableCell className="text-nowrap">Created By</TableCell>
+                      <TableCell className="text-nowrap">Updated By</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -267,6 +270,14 @@ const Event = () => {
                               {x?.location?.venue}, {x?.location?.city}, {x?.location?.state},{' '}
                               {x?.location?.address}
                             </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}
