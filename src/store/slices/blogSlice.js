@@ -20,7 +20,6 @@ const initialState = {
   blogLoading: false,
   selectedBlog: blogInitDetails,
   crudBlogLoading: false,
-  duplicateBlogLoading: false,
   exportExcelLoading: false,
 };
 
@@ -43,9 +42,6 @@ const blogSlice = createSlice({
     setCrudBlogLoading: (state, action) => {
       state.crudBlogLoading = action.payload;
     },
-    setDuplicateBlogLoading: (state, action) => {
-      state.duplicateBlogLoading = action.payload;
-    },
     setExportExcelLoading: (state, action) => {
       state.exportExcelLoading = action.payload;
     },
@@ -58,7 +54,6 @@ export const {
   setBlogLoading,
   setSelectedBlog,
   setCrudBlogLoading,
-  setDuplicateBlogLoading,
   setExportExcelLoading,
 } = blogSlice.actions;
 
