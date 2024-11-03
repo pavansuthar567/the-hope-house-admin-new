@@ -10,6 +10,7 @@ import volunteer from './slices/volunteerSlice';
 import teamMembers from './slices/teamMembersSlice';
 import testimonial from './slices/testimonialSlice';
 import recognition from './slices/recognitionSlice';
+import blog from './slices/blogSlice';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ const reducers = combineReducers({
   teamMembers,
   recognition,
   testimonial,
+  blog,
 });
 
 // ----------------------------------------------------------------------

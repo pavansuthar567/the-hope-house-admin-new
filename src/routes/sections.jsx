@@ -28,6 +28,8 @@ export const AddRecognitionPage = lazy(() => import('src/pages/recognition/add')
 export const RecognitionPage = lazy(() => import('src/pages/recognition/recognition'));
 export const AddGalleryPage = lazy(() => import('src/pages/gallery/add'));
 export const GalleryPage = lazy(() => import('src/pages/gallery/gallery'));
+export const AddBlogPage = lazy(() => import('src/pages/blog/add'));
+export const BlogPage = lazy(() => import('src/pages/blog/blog'));
 
 // ----------------------------------------------------------------------
 
@@ -208,6 +210,22 @@ export default function Router() {
           element: (
             // <ProtectedRoutes pageId={'volunteer'}>
             <AddGalleryPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'blog',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <BlogPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: '/blog/add',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AddBlogPage />
             // </ProtectedRoutes>
           ),
         },

@@ -58,6 +58,7 @@ import {
   TableToolbar,
   TextTransformation,
   WordCount,
+  SourceEditing,
 } from 'ckeditor5';
 
 const Editor = forwardRef(({ sx = {}, style = {}, ...other }, ref) => {
@@ -95,6 +96,7 @@ const Editor = forwardRef(({ sx = {}, style = {}, ...other }, ref) => {
               'blockQuote',
               'mediaEmbed',
               'codeBlock',
+              'sourceEditing',
               'pageBreak',
               'horizontalLine',
               'specialCharacters',
@@ -326,6 +328,7 @@ const Editor = forwardRef(({ sx = {}, style = {}, ...other }, ref) => {
             TodoList,
             Underline,
             WordCount,
+            SourceEditing,
           ],
           placeholder: 'Type or paste your content here!',
           style: {

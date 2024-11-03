@@ -74,7 +74,6 @@ export default function AddQuote() {
       validationSchema,
     });
 
-  console.log('values', values);
   return (
     <>
       <Container sx={{ height: '100%' }}>

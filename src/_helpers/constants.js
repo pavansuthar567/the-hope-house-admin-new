@@ -96,6 +96,49 @@ export const faqsCategories = [
   },
 ];
 
+export const blogCategories = [
+  {
+    label: 'Education',
+    value: 'Education',
+  },
+  {
+    label: 'Healthcare',
+    value: 'Healthcare',
+  },
+  {
+    label: 'Environment',
+    value: 'Environment',
+  },
+  {
+    label: 'Women Empowerment',
+    value: 'Women Empowerment',
+  },
+  {
+    label: 'Child Welfare',
+    value: 'Child Welfare',
+  },
+  {
+    label: 'Community Development',
+    value: 'Community Development',
+  },
+  {
+    label: 'Disaster Relief',
+    value: 'Disaster Relief',
+  },
+  {
+    label: 'Human Rights',
+    value: 'Human Rights',
+  },
+  {
+    label: 'Animal Welfare',
+    value: 'Animal Welfare',
+  },
+  {
+    label: 'Sustainability',
+    value: 'Sustainability',
+  },
+];
+
 export const ITEM_HEIGHT = 48;
 export const ITEM_PADDING_TOP = 8;
 

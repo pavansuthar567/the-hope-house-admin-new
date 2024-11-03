@@ -88,7 +88,6 @@ export default function AddFaqs() {
       validationSchema,
     });
 
-  console.log('values', values);
   return (
     <>
       <Container sx={{ height: '100%' }}>
