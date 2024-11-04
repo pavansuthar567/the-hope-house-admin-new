@@ -84,7 +84,7 @@ const FileDrop = forwardRef(
 
             //FIX BUG HERE
             // Validate the image size.
-            if (file.size > (mediaType === 'video' ? HUNDRED_MB : FIVEMB)) {
+            if (file.size > (mediaType === 'video' ? TENMB : FIVEMB)) {
               // size in bytes
               toast.error(
                 `Invalid Size! (Only ${mediaType === 'video' ? 100 : 5} MB are allowed!)`

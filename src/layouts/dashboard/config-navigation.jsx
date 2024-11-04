@@ -36,6 +36,19 @@ const navConfig = [
   //   children: [],
   // },
   {
+    title: 'home',
+    pageId: 'home',
+    path: '/home',
+    icon: <HomeTwoToneIcon />,
+    children: ['/home', '/home/add'],
+  },
+  {
+    title: 'users',
+    path: '/users',
+    icon: <Face6Icon />,
+    children: ['/users', '/users/add'],
+  },
+  {
     title: 'volunteer',
     path: '/volunteer',
     icon: icon('ic_user'),
@@ -54,19 +67,6 @@ const navConfig = [
     children: ['/events', '/events/add'],
   },
   {
-    title: 'users',
-    path: '/users',
-    icon: <Face6Icon />,
-    children: ['/users', '/users/add'],
-  },
-  {
-    title: 'testimonial',
-    pageId: 'testimonial',
-    path: '/testimonial',
-    icon: icon('ic_user'),
-    children: ['/testimonial', '/testimonial/add'],
-  },
-  {
     title: 'faqs',
     pageId: 'faqs',
     path: '/faqs',
@@ -79,20 +79,6 @@ const navConfig = [
     path: '/quote',
     icon: <FormatQuoteTwoToneIcon />,
     children: ['/quote', '/quote/add'],
-  },
-  // {
-  //   title: 'home',
-  //   pageId: 'home',
-  //   path: '/home',
-  //   icon: <HomeTwoToneIcon />,
-  //   children: ['/home', '/home/add'],
-  // },
-  {
-    title: 'recognition',
-    pageId: 'recognition',
-    path: '/recognition',
-    icon: <WorkspacePremiumTwoToneIcon />,
-    children: ['/recognition', '/recognition/add'],
   },
   {
     title: 'gallery',
@@ -107,6 +93,20 @@ const navConfig = [
     path: '/blog',
     icon: <NewspaperIcon />,
     children: ['/blog', '/blog/add'],
+  },
+  {
+    title: 'testimonial',
+    pageId: 'testimonial',
+    path: '/testimonial',
+    icon: icon('ic_user'),
+    children: ['/testimonial', '/testimonial/add'],
+  },
+  {
+    title: 'recognition',
+    pageId: 'recognition',
+    path: '/recognition',
+    icon: <WorkspacePremiumTwoToneIcon />,
+    children: ['/recognition', '/recognition/add'],
   },
   // {
   //   title: 'brand',

@@ -97,7 +97,10 @@ export const updateRecognition = (obj) => async (dispatch) => {
           }
         }
 
-        let files = [...obj?.imageUrl?.filter((x) => typeof x === 'object')];
+        let files = [
+          ...(obj?.imageUrl || [])?.filter((x) => x instanceof File || x instanceof Blob),
+        ];
+
         if (files?.length) {
           try {
             urls = await dispatch(fileUpload(files));

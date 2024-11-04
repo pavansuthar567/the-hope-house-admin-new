@@ -15,7 +15,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import GalleryCard from './gallery-card';
+import HomeCard from './home-card';
 import NoData from 'src/components/no-data';
 import Iconify from 'src/components/iconify';
 import Spinner from 'src/components/spinner';
@@ -24,12 +24,12 @@ import Pagination from 'src/components/pagination';
 import { fPageCount } from 'src/utils/format-number';
 import { perPageCountOptions } from 'src/_helpers/constants';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
-import { deleteGallery, getGalleries } from 'src/_services/gallery.service';
-import { setPerPageCount, setSelectedGallery } from 'src/store/slices/gallerySlice';
+import { deleteHome, getHomeList } from 'src/_services/home.service';
+import { setPerPageCount, setSelectedHome } from 'src/store/slices/homeSlice';
 
 // ----------------------------------------------------------------------
 
-const Gallery = () => {
+const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -38,19 +38,16 @@ const Gallery = () => {
   const [searchedValue, setSearchedValue] = useState('');
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [currentPageData, setCurrentPageData] = useState([]);
-  const [selectedGalleryId, setSelectedGalleryId] = useState();
+  const [selectedHomeId, setSelectedHomeId] = useState();
 
-  const { galleryLoading, galleryList, crudGalleryLoading, perPageCount } = useSelector(
-    ({ gallery }) => gallery
-  );
+  const { homeLoading, homeList, crudHomeLoading, perPageCount } = useSelector(({ home }) => home);
 
   useEffect(() => {
     const searchKey = searchedValue?.trim()?.toLowerCase();
 
-    let filteredList = galleryList?.filter((item) => {
+    let filteredList = homeList?.filter((item) => {
       const matchesSearch =
         item?.mission?.toLowerCase()?.includes(searchKey) ||
-        item?.caption?.toLowerCase()?.includes(searchKey) ||
         item?.createdAt?.toLowerCase()?.includes(searchKey) ||
         item?.createdBy?.toLowerCase()?.includes(searchKey) ||
         item?.updatedBy?.toLowerCase()?.includes(searchKey) ||
@@ -64,11 +61,11 @@ const Gallery = () => {
     const indexOfFirstItem = indexOfLastItem - perPageCount;
     const currentItems = filteredList?.slice(indexOfFirstItem, indexOfLastItem);
     setCurrentPageData(currentItems);
-  }, [page, galleryList, perPageCount, searchedValue]);
+  }, [page, homeList, perPageCount, searchedValue]);
 
   const loadData = useCallback(
     (cPage = page) => {
-      dispatch(getGalleries());
+      dispatch(getHomeList());
       setPage(cPage);
     },
     [page]
@@ -90,30 +87,30 @@ const Gallery = () => {
 
   const handlePopup = useCallback(
     (e, reason) => {
-      if (crudGalleryLoading && reason === 'backdropClick') return;
+      if (crudHomeLoading && reason === 'backdropClick') return;
       setOpen(null);
-      setSelectedGalleryId();
+      setSelectedHomeId();
     },
-    [crudGalleryLoading]
+    [crudHomeLoading]
   );
 
   const handleEdit = useCallback(async () => {
-    const gallery = galleryList?.find((x) => x?._id === selectedGalleryId);
-    if (gallery) {
-      dispatch(setSelectedGallery(gallery));
-      navigate(`/gallery/add?galleryId=${gallery?._id}`);
+    const home = homeList?.find((x) => x?._id === selectedHomeId);
+    if (home) {
+      dispatch(setSelectedHome(home));
+      navigate(`/home/add?homeId=${home?._id}`);
     }
-  }, [selectedGalleryId, galleryList]);
+  }, [selectedHomeId, homeList]);
 
   const handleDelete = useCallback(async () => {
-    const res = await dispatch(deleteGallery(selectedGalleryId));
+    const res = await dispatch(deleteHome(selectedHomeId));
     if (res) {
       const cPage = page !== 0 && currentPageData?.length === 1 ? page - 1 : page;
       loadData(cPage);
       handlePopup();
       setDeleteDialog(false);
     }
-  }, [selectedGalleryId, currentPageData]);
+  }, [selectedHomeId, currentPageData]);
 
   const pageCount = (
     <TextField
@@ -146,17 +143,17 @@ const Gallery = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={handleEdit} disabled={crudGalleryLoading}>
+        <MenuItem onClick={handleEdit} disabled={crudHomeLoading}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
         <MenuItem
           sx={{ color: 'error.main' }}
-          disabled={crudGalleryLoading}
+          disabled={crudHomeLoading}
           onClick={() => setDeleteDialog(true)}
         >
-          {crudGalleryLoading ? (
+          {crudHomeLoading ? (
             <Box
               sx={{
                 gap: '15px',
@@ -176,11 +173,11 @@ const Gallery = () => {
         </MenuItem>
       </Popover>
     ) : null;
-  }, [open, crudGalleryLoading]);
+  }, [open, crudHomeLoading]);
 
   return (
     <Container>
-      {galleryLoading ? (
+      {homeLoading ? (
         <div className="flex justify-center items-center h-full p-4">
           <Spinner />
         </div>
@@ -196,7 +193,7 @@ const Gallery = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="h4">Gallery</Typography>
+            <Typography variant="h4">Home</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
               <TextField
                 size="small"
@@ -219,14 +216,14 @@ const Gallery = () => {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => navigate('/gallery/add')}
+                onClick={() => navigate('/home/add')}
               >
-                New Gallery
+                New Home
               </Button>
             </Box>
           </Box>
           <Stack sx={{ height: '99%', display: 'flex', justifyContent: 'space-between' }}>
-            {galleryLoading ? (
+            {homeLoading ? (
               <div className="flex justify-center items-center h-full">
                 <Spinner />
               </div>
@@ -236,11 +233,11 @@ const Gallery = () => {
                   <Grid container spacing={3}>
                     {currentPageData?.map((x) => (
                       <Grid key={x?._id} xs={12} sm={6}>
-                        <GalleryCard
-                          gallery={x}
+                        <HomeCard
+                          home={x}
                           openDialog={deleteDialog}
                           setOpenDialog={setDeleteDialog}
-                          setSelectedId={setSelectedGalleryId}
+                          setSelectedId={setSelectedHomeId}
                         />
                       </Grid>
                     ))}
@@ -292,10 +289,10 @@ const Gallery = () => {
                 </>
               )
             )}
-            {(galleryList?.length === 0 || currentPageData?.length === 0) && !galleryLoading && (
+            {(homeList?.length === 0 || currentPageData?.length === 0) && !homeLoading && (
               <NoData>
-                {galleryList?.length === 0
-                  ? `Click the "New Gallery" button to get started.`
+                {homeList?.length === 0
+                  ? `Click the "New Home" button to get started.`
                   : 'Clear all filters'}
               </NoData>
             )}
@@ -310,13 +307,13 @@ const Gallery = () => {
           open={deleteDialog}
           setOpen={setDeleteDialog}
           handleConfirm={handleDelete}
-          loading={crudGalleryLoading}
+          loading={crudHomeLoading}
         >
-          Do you want to delete this gallery?
+          Do you want to delete this home?
         </ConfirmationDialog>
       ) : null}
     </Container>
   );
 };
 
-export default Gallery;
+export default Home;
