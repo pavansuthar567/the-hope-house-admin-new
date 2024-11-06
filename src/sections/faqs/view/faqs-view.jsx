@@ -227,19 +227,21 @@ const FaqssView = () => {
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
                             <TableCell>{x?.category}</TableCell>
                             <TableCell>{x?.question}</TableCell>
-                            <TableCell className="text-nowrap">
-                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
-                            </TableCell>
-                            <TableCell className="text-nowrap">
-                              {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
-                            </TableCell>
-                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
-                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell
                               dangerouslySetInnerHTML={{
                                 __html: x?.answer,
                               }}
                             ></TableCell>
+                            <TableCell className="text-nowrap">
+                              {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
+                            </TableCell>
+                            <TableCell className="text-nowrap">
+                              {x?.updatedAt
+                                ? fhelper.formatAndDisplayDate(new Date(x?.updatedAt))
+                                : 'N/A'}
+                            </TableCell>
+                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}
