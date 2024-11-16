@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CSVLink } from 'react-csv';
+import { Modal } from '@mui/material';
 
 import {
   Box,
@@ -43,6 +44,8 @@ const Recognition = () => {
   const [searchedValue, setSearchedValue] = useState('');
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [selectedRecognitionId, setSelectedRecognitionId] = useState();
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   const { recognitionLoading, recognitionList, crudRecognitionLoading } = useSelector(
     ({ recognition }) => recognition
@@ -117,6 +120,16 @@ const Recognition = () => {
       setDeleteDialog(false);
     }
   }, [selectedRecognitionId]);
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setImageModalOpen(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedImage('');
+  };
 
   const renderPopup = useMemo(() => {
     return !!open ? (
@@ -279,7 +292,10 @@ const Recognition = () => {
                             <TableCell className="overflow-hidden">
                               <ProgressiveImg
                                 src={x?.imageUrl}
-                                customClassName={'max-h-10 h-10 w-10 object-contain rounded'}
+                                customClassName={
+                                  'max-h-10 h-10 w-10 object-contain rounded cursor-pointer'
+                                }
+                                onClick={() => handleImageClick(x?.imageUrl)}
                               />
                             </TableCell>
                             <TableCell sx={{ minWidth: '150px' }}>{x?.title}</TableCell>
@@ -335,6 +351,40 @@ const Recognition = () => {
           </Card>
         </>
       )}
+
+      <Modal
+        open={imageModalOpen}
+        onClose={handleCloseImageModal}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Box
+          sx={{
+            position: 'relative',
+            backgroundColor: 'white',
+            padding: 2,
+            borderRadius: 1,
+            boxShadow: 24,
+          }}
+          onClick={handleCloseImageModal}
+        >
+          <Iconify
+            icon="eva:close-fill"
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              cursor: 'pointer',
+              zIndex: 1,
+            }}
+            onClick={handleCloseImageModal}
+          />
+          <img
+            src={selectedImage}
+            alt="Full view"
+            style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+          />
+        </Box>
+      </Modal>
 
       {renderPopup}
 
