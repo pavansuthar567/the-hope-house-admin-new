@@ -24,10 +24,6 @@ import { volunteerInitDetails, setSelectedVolunteer } from 'src/store/slices/vol
 import Spinner from 'src/components/spinner';
 import { LoadingButton } from 'src/components/button';
 import { createVolunteer, getVolunteer, updateVolunteer } from 'src/_services/volunteer.service';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MenuProps, skills } from 'src/_helpers/constants';
 import Label from 'src/components/label';
 
@@ -45,21 +41,9 @@ const validationSchema = Yup.object().shape({
     .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits')
     .required('Phone number is required'),
   address: Yup.object().shape({
-    street: Yup.string()
-      .max(255, 'Street must be 255 characters or less')
-      .required('Street is required'),
     city: Yup.string().max(100, 'City must be 100 characters or less').required('City is required'),
     state: Yup.string().required('State is required'),
-    zipCode: Yup.string()
-      .matches(/^[0-9]{6}$/, 'ZIP code must be exactly 6 digits')
-      .required('ZIP code is required'),
   }),
-  dateOfBirth: Yup.date()
-    .required('Date of birth is required')
-    .max(
-      new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
-      'You must be at least 18 years old'
-    ),
   gender: Yup.string()
     .oneOf(['Male', 'Female', 'Other'], 'Invalid gender')
     .required('Gender is required'),
@@ -70,23 +54,9 @@ const validationSchema = Yup.object().shape({
   availability: Yup.string()
     .oneOf(['Full-time', 'Part-time', 'Contract'], 'Invalid availability type')
     .required('Availability is required'),
-  joinedDate: Yup.date()
-    .required('Joined date is required')
-    .min(Yup.ref('dateOfBirth'), 'Joined date must be after date of birth'),
   experience: Yup.string()
     .max(50, 'Experience description must be 50 characters or less')
     .required('Experience is required'),
-  emergencyContact: Yup.object().shape({
-    name: Yup.string()
-      .max(100, 'Name must be 100 characters or less')
-      .required('Emergency contact name is required'),
-    phoneNumber: Yup.string()
-      .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits')
-      .required('Emergency contact phone number is required'),
-    relation: Yup.string()
-      .max(50, 'Relation must be 50 characters or less')
-      .required('Relation is required'),
-  }),
 });
 
 // ----------------------------------------------------------------------
@@ -114,15 +84,8 @@ export default function AddVolunteerPage() {
     const payload = {
       ...fields,
       address: {
-        street: fields?.address?.street,
         city: fields?.address?.city,
         state: fields?.address?.state,
-        zipCode: fields?.address?.zipCode,
-      },
-      emergencyContact: {
-        relation: fields?.emergencyContact?.relation,
-        phoneNumber: fields?.emergencyContact?.phoneNumber,
-        name: fields?.emergencyContact?.name,
       },
       skills: fields?.skills.includes('other') ? [fields?.otherSkill] : fields?.skills,
     };
@@ -183,7 +146,7 @@ export default function AddVolunteerPage() {
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Details</Typography>
 
-                    <Typography variant="body2">First Name, Last Name, DOB...</Typography>
+                    <Typography variant="body2">First Name, Last Name...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -262,50 +225,6 @@ export default function AddVolunteerPage() {
                         </Grid>
                       </Grid>
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6} m={0}>
-                          <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DemoContainer components={['DatePicker']} sx={{ pt: 0 }}>
-                              <DatePicker
-                                sx={{ width: '100%' }}
-                                label="DOB"
-                                value={new Date(values.dateOfBirth) || null}
-                                slotProps={{
-                                  textField: {
-                                    error: !!(touched.dateOfBirth || errors.dateOfBirth),
-                                    helperText:
-                                      touched.dateOfBirth || errors.dateOfBirth
-                                        ? errors.dateOfBirth
-                                        : '',
-                                  },
-                                }}
-                                onChange={(newValue) => setFieldValue('dateOfBirth', newValue)}
-                              />
-                            </DemoContainer>
-                          </LocalizationProvider>
-                        </Grid>
-                        <Grid xs={12} sm={6} md={6} m={0}>
-                          <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DemoContainer components={['DatePicker']} sx={{ pt: 0 }}>
-                              <DatePicker
-                                sx={{ width: '100%' }}
-                                label="Joined Date"
-                                value={new Date(values.joinedDate) || null}
-                                onChange={(newValue) => setFieldValue('joinedDate', newValue)}
-                                slotProps={{
-                                  textField: {
-                                    error: !!(touched.joinedDate || errors.joinedDate),
-                                    helperText:
-                                      touched.joinedDate || errors.joinedDate
-                                        ? errors.joinedDate
-                                        : '',
-                                  },
-                                }}
-                              />
-                            </DemoContainer>
-                          </LocalizationProvider>
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <FormControl fullWidth>
                             <InputLabel id="gender-label">Gender</InputLabel>
@@ -337,7 +256,7 @@ export default function AddVolunteerPage() {
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Address</Typography>
-                    <Typography variant="body2">Street, City, State...</Typography>
+                    <Typography variant="body2">City, State...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -349,24 +268,6 @@ export default function AddVolunteerPage() {
                       }}
                     >
                       <Grid container spacing={2}>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            name="address.street"
-                            label="Street"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values?.address?.street || ''}
-                            error={!!(touched?.address?.street && errors?.address?.street)}
-                            helperText={
-                              touched?.address?.street && errors?.address?.street
-                                ? errors?.address?.street
-                                : ''
-                            }
-                            sx={{
-                              width: '100%',
-                            }}
-                          />
-                        </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
                             name="address.city"
@@ -405,24 +306,6 @@ export default function AddVolunteerPage() {
                             }}
                           />
                         </Grid>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            name="address.zipCode"
-                            label="ZIP Code"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values?.address?.zipCode || ''}
-                            error={!!(touched?.address?.zipCode && errors?.address?.zipCode)}
-                            helperText={
-                              touched?.address?.zipCode && errors?.address?.zipCode
-                                ? errors?.address?.zipCode
-                                : ''
-                            }
-                            sx={{
-                              width: '100%',
-                            }}
-                          />
-                        </Grid>
                       </Grid>
                     </Card>
                   </Grid>
@@ -432,7 +315,7 @@ export default function AddVolunteerPage() {
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Specifications</Typography>
                     <Typography variant="body2">
-                      Availability, Experience, Skills, SOS...
+                      Availability, Experience, Skills...
                     </Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
@@ -490,7 +373,6 @@ export default function AddVolunteerPage() {
                             <Select
                               label="Skills"
                               name="skills"
-                              // multiple
                               value={values.skills || []}
                               onChange={handleChangeSkills}
                               onBlur={handleBlur}
@@ -523,72 +405,6 @@ export default function AddVolunteerPage() {
                               />
                             )}
                           </FormControl>
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            label="Emergency Contact Name"
-                            name="emergencyContact.name"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.emergencyContact?.name || ''}
-                            error={
-                              !!(touched.emergencyContact?.name && errors.emergencyContact?.name)
-                            }
-                            helperText={
-                              touched.emergencyContact?.name && errors.emergencyContact?.name
-                                ? errors.emergencyContact?.name
-                                : ''
-                            }
-                            sx={{ width: '100%' }}
-                          />
-                        </Grid>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            label="Emergency Contact Phone"
-                            name="emergencyContact.phoneNumber"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.emergencyContact?.phoneNumber || ''}
-                            error={
-                              !!(
-                                touched.emergencyContact?.phoneNumber &&
-                                errors.emergencyContact?.phoneNumber
-                              )
-                            }
-                            helperText={
-                              touched.emergencyContact?.phoneNumber &&
-                              errors.emergencyContact?.phoneNumber
-                                ? errors.emergencyContact?.phoneNumber
-                                : ''
-                            }
-                            sx={{ width: '100%' }}
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            label="Emergency Contact Relation"
-                            name="emergencyContact.relation"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.emergencyContact?.relation || ''}
-                            error={
-                              !!(
-                                touched.emergencyContact?.relation &&
-                                errors.emergencyContact?.relation
-                              )
-                            }
-                            helperText={
-                              touched.emergencyContact?.relation &&
-                              errors.emergencyContact?.relation
-                                ? errors.emergencyContact?.relation
-                                : ''
-                            }
-                            sx={{ width: '100%' }}
-                          />
                         </Grid>
                       </Grid>
                     </Card>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CSVLink } from 'react-csv';
 
 import {
   Box,
@@ -168,6 +169,46 @@ const Event = () => {
     ) : null;
   }, [open, crudEventLoading]);
 
+  // CSV Headers
+  const csvHeaders = [
+    { label: 'Id', key: 'srNo' },
+    { label: 'Event Name', key: 'eventName' },
+    { label: 'Event Type', key: 'eventType' },
+    { label: 'Description', key: 'description' },
+    { label: 'Start Date', key: 'startDate' },
+    { label: 'End Date', key: 'endDate' },
+    { label: 'Participants Registered', key: 'participantsRegistered' },
+    { label: 'Organizer', key: 'organizer' },
+    { label: 'Registration Link', key: 'registrationLink' },
+    { label: 'Status', key: 'status' },
+    { label: 'Location', key: 'location' },
+    { label: 'Created At', key: 'createdAt' },
+    { label: 'Updated At', key: 'updatedAt' },
+    { label: 'Created By', key: 'createdBy.username' },
+    { label: 'Updated By', key: 'updatedBy.username' },
+  ];
+
+  // Memoized CSV Data
+  const csvData = useMemo(() => {
+    return filteredItems?.map((item) => ({
+      srNo: item.srNo,
+      eventName: item.eventName,
+      eventType: item.eventType,
+      description: item.description,
+      startDate: fhelper.formatAndDisplayDate(new Date(item.startDate)),
+      endDate: fhelper.formatAndDisplayDate(new Date(item.endDate)),
+      participantsRegistered: item.participantsRegistered,
+      organizer: item.organizer,
+      registrationLink: item.registrationLink,
+      status: item.status,
+      location: `${item.location?.venue}, ${item.location?.city}, ${item.location?.state}, ${item.location?.address}`,
+      createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
+      updatedAt: fhelper.formatAndDisplayDate(new Date(item.updatedAt)),
+      createdBy: item.createdBy?.username || 'N/A',
+      updatedBy: item.updatedBy?.username || 'N/A',
+    }));
+  }, [filteredItems]);
+
   return (
     <Container>
       {eventLoading ? (
@@ -213,6 +254,16 @@ const Event = () => {
               >
                 New Event
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename="events.csv"
+                className="btn btn-primary"
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>

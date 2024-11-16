@@ -6,23 +6,14 @@ export const volunteerInitDetails = {
   email: '',
   phoneNumber: '',
   address: {
-    street: '',
     city: '',
     state: '',
-    zipCode: '',
   },
-  dateOfBirth: '',
   gender: '',
   skills: [],
   otherSkill: '',
   availability: '',
-  joinedDate: '',
   experience: '',
-  emergencyContact: {
-    name: '',
-    phoneNumber: '',
-    relation: '',
-  },
 };
 
 const initialState = {

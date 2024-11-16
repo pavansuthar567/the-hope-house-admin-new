@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CSVLink } from 'react-csv'; // Import react-csv for CSV download
 
 import {
   Box,
@@ -19,6 +20,7 @@ import {
   TablePagination,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Icon } from '@iconify/react';
 
 import { deleteUser, getUsers } from 'src/_services/user.service';
 import Iconify from 'src/components/iconify';
@@ -153,6 +155,27 @@ const UsersView = () => {
     ) : null;
   }, [open, crudUserLoading]);
 
+  // Prepare data for CSV download with static headers
+  const csvData = filteredItems?.map((item) => ({
+    Id: item?.srNo,
+    Name: item?.name,
+    Email: item?.email,
+    'Created At': fhelper.formatAndDisplayDate(new Date(item?.createdAt)),
+    'Updated At': fhelper.formatAndDisplayDate(new Date(item?.updatedAt)),
+    'Created By': item?.createdBy?.username || 'N/A',
+    'Updated By': item?.updatedBy?.username || 'N/A',
+  }));
+
+  const csvHeaders = [
+    { label: 'Id', key: 'Id' },
+    { label: 'Name', key: 'Name' },
+    { label: 'Email', key: 'Email' },
+    { label: 'Created At', key: 'Created At' },
+    { label: 'Updated At', key: 'Updated At' },
+    { label: 'Created By', key: 'Created By' },
+    { label: 'Updated By', key: 'Updated By' },
+  ];
+
   return (
     <Container>
       {userLoading ? (
@@ -198,6 +221,16 @@ const UsersView = () => {
               >
                 New User
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename={'users_data.csv'}
+                style={{ textDecoration: 'none' }}
+              >
+                <Button variant="contained">
+                  <Icon icon="basil:file-download-solid" style={{ fontSize: '1.5rem' }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>

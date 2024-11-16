@@ -31,6 +31,7 @@ import ProgressiveImg from 'src/components/progressive-img';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { setSelectedTeamMembers } from 'src/store/slices/teamMembersSlice';
 import { deleteTeamMembers, getTeamMembers } from 'src/_services/team-members.service';
+import { CSVLink } from 'react-csv';
 
 // ----------------------------------------------------------------------
 
@@ -55,8 +56,8 @@ const TeamMembers = () => {
       item?.lastName?.toLowerCase()?.includes(searchKey) ||
       item?.email?.toLowerCase()?.includes(searchKey) ||
       item?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
-      item?.skills?.some((skill) => skill.toLowerCase().includes(searchKey)) || // Adjusted this line
-      item?.address?.street?.toLowerCase()?.includes(searchKey) || // Check specific fields in address
+      item?.skills?.some((skill) => skill.toLowerCase().includes(searchKey)) ||
+      item?.address?.street?.toLowerCase()?.includes(searchKey) ||
       item?.address?.city?.toLowerCase()?.includes(searchKey) ||
       item?.address?.state?.toLowerCase()?.includes(searchKey) ||
       item?.address?.zipCode?.toLowerCase()?.includes(searchKey) ||
@@ -165,6 +166,44 @@ const TeamMembers = () => {
     ) : null;
   }, [open, crudTeamMembersLoading]);
 
+  const csvHeaders = [
+    { label: 'Id', key: 'srNo' },
+    { label: 'First Name', key: 'firstName' },
+    { label: 'Last Name', key: 'lastName' },
+    { label: 'Email', key: 'email' },
+    { label: 'Phone Number', key: 'phoneNumber' },
+    { label: 'Role', key: 'role' },
+    { label: 'Bio', key: 'bio' },
+    { label: 'Date Of Joining', key: 'dateOfJoining' },
+    { label: 'Skills', key: 'skills' },
+    { label: 'Address', key: 'address' },
+    { label: 'Created At', key: 'createdAt' },
+    { label: 'Updated At', key: 'updatedAt' },
+    { label: 'Created By', key: 'createdBy.username' },
+    { label: 'Updated By', key: 'updatedBy.username' },
+  ];
+
+  const csvData = useMemo(() => {
+    return (
+      filteredItems?.map((item) => ({
+        srNo: item?.srNo,
+        firstName: item?.firstName,
+        lastName: item?.lastName,
+        email: item?.email,
+        phoneNumber: item?.phoneNumber,
+        role: item?.role,
+        bio: item?.bio,
+        dateOfJoining: fhelper.formatAndDisplayDate(new Date(item?.dateOfJoining)),
+        skills: item?.skills?.join(', '),
+        address: `${item?.address?.street}, ${item?.address?.city}, ${item?.address?.state}, ${item?.address?.zipCode}`,
+        createdAt: fhelper.formatAndDisplayDate(new Date(item?.createdAt)),
+        updatedAt: fhelper.formatAndDisplayDate(new Date(item?.updatedAt)),
+        'createdBy.username': item?.createdBy?.username || 'N/A',
+        'updatedBy.username': item?.updatedBy?.username || 'N/A',
+      })) || []
+    );
+  }, [filteredItems]);
+
   return (
     <Container>
       {teamMembersLoading ? (
@@ -210,6 +249,16 @@ const TeamMembers = () => {
               >
                 New TeamMember
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename={'team_members.csv'}
+                className="btn btn-primary"
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>
@@ -259,9 +308,9 @@ const TeamMembers = () => {
                               {fhelper.formatAndDisplayDate(new Date(x?.dateOfJoining))}
                             </TableCell>
                             <TableCell className="">
-                              {x?.skills?.map((x, i) => (
-                                <Label sx={{ m: 0 }} key={`skill-${x}-${i}`}>
-                                  {x}
+                              {x?.skills?.map((skill, i) => (
+                                <Label sx={{ m: 0 }} key={`skill-${skill}-${i}`}>
+                                  {skill}
                                 </Label>
                               ))}
                             </TableCell>

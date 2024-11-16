@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CSVLink } from 'react-csv';
 
 import {
   Box,
@@ -26,6 +27,7 @@ import { perPageCountOptions } from 'src/_helpers/constants';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { deleteGallery, getGalleries } from 'src/_services/gallery.service';
 import { setPerPageCount, setSelectedGallery } from 'src/store/slices/gallerySlice';
+import { fhelper } from 'src/_helpers';
 
 // ----------------------------------------------------------------------
 
@@ -133,6 +135,29 @@ const Gallery = () => {
     </TextField>
   );
 
+  // CSV headers and data memoization
+  const csvHeaders = [
+    { label: 'Id', key: 'id' },
+    { label: 'Mission', key: 'mission' },
+    { label: 'Caption', key: 'caption' },
+    { label: 'Created At', key: 'createdAt' },
+    { label: 'Created By', key: 'createdBy' },
+    { label: 'Updated At', key: 'updatedAt' },
+    { label: 'Updated By', key: 'updatedBy' },
+  ];
+
+  const csvData = useMemo(() => {
+    return filteredList.map((item, index) => ({
+      id: index + 1,
+      mission: item.mission,
+      caption: item.caption,
+      createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
+      createdBy: item.createdBy,
+      updatedAt: fhelper.formatAndDisplayDate(new Date(item.updatedAt)),
+      updatedBy: item.updatedBy,
+    }));
+  }, [filteredList]);
+
   const renderPopup = useMemo(() => {
     return !!open ? (
       <Popover
@@ -223,6 +248,16 @@ const Gallery = () => {
               >
                 New Gallery
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename="gallery_data.csv"
+                style={{ textDecoration: 'none' }}
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Stack sx={{ height: '99%', display: 'flex', justifyContent: 'space-between' }}>
