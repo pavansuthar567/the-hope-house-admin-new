@@ -17,6 +17,7 @@ import {
   TableContainer,
   InputAdornment,
   TablePagination,
+  Modal,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -43,6 +44,8 @@ const Testimonial = () => {
   const [searchedValue, setSearchedValue] = useState('');
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [selectedTestimonialId, setSelectedTestimonialId] = useState();
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   const { testimonialLoading, testimonialList, crudTestimonialLoading } = useSelector(
     ({ testimonial }) => testimonial
@@ -194,6 +197,16 @@ const Testimonial = () => {
     ) : null;
   }, [open, crudTestimonialLoading]);
 
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setImageModalOpen(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedImage('');
+  };
+
   return (
     <Container>
       {testimonialLoading ? (
@@ -280,7 +293,10 @@ const Testimonial = () => {
                               <ProgressiveImg
                                 alt={x?.name}
                                 src={x?.image}
-                                customClassName={'max-h-10 h-10 w-10 object-contain rounded'}
+                                customClassName={
+                                  'max-h-10 h-10 w-10 object-contain rounded cursor-pointer'
+                                }
+                                onClick={() => handleImageClick(x?.image)}
                               />
                             </TableCell>
                             <TableCell>{x?.name}</TableCell>
@@ -331,6 +347,40 @@ const Testimonial = () => {
               />
             ) : null}
           </Card>
+
+          <Modal
+            open={imageModalOpen}
+            onClose={handleCloseImageModal}
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Box
+              sx={{
+                position: 'relative',
+                backgroundColor: 'white',
+                padding: 2,
+                borderRadius: 1,
+                boxShadow: 24,
+              }}
+              onClick={handleCloseImageModal}
+            >
+              <Iconify
+                icon="eva:close-fill"
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  cursor: 'pointer',
+                  zIndex: 1,
+                }}
+                onClick={handleCloseImageModal}
+              />
+              <img
+                src={selectedImage}
+                alt="Full view"
+                style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+              />
+            </Box>
+          </Modal>
         </>
       )}
 
