@@ -29,6 +29,7 @@ import { Button } from 'src/components/button';
 import { setSelectedQuote } from 'src/store/slices/quoteSlice';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { deleteQuote, getQuotes } from 'src/_services/quote.service';
+import { CSVLink } from 'react-csv';
 
 // ----------------------------------------------------------------------
 
@@ -109,6 +110,37 @@ const QuoteView = () => {
       setDeleteDialog(false);
     }
   }, [selectedQuoteId]);
+
+  const csvHeaders = useMemo(
+    () => [
+      { label: 'Id', key: 'srNo' },
+      { label: 'Text', key: 'text' },
+      { label: 'Author', key: 'author' },
+      { label: 'Category', key: 'category' },
+      { label: 'Source', key: 'source' },
+      { label: 'Created At', key: 'createdAt' },
+      { label: 'Updated At', key: 'updatedAt' },
+      { label: 'Created By', key: 'createdBy.username' },
+      { label: 'Updated By', key: 'updatedBy.username' },
+    ],
+    []
+  );
+
+  const csvData = useMemo(() => {
+    return (
+      filteredItems?.map((item) => ({
+        srNo: item.srNo,
+        text: item.text,
+        author: item.author,
+        category: item.category,
+        source: item.source,
+        createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
+        updatedAt: fhelper.formatAndDisplayDate(new Date(item.updatedAt)),
+        'createdBy.username': item.createdBy?.username || 'N/A',
+        'updatedBy.username': item.updatedBy?.username || 'N/A',
+      })) || []
+    );
+  }, [filteredItems]);
 
   const renderPopup = useMemo(() => {
     return !!open ? (
@@ -200,6 +232,16 @@ const QuoteView = () => {
               >
                 New Quote
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename="quotes.csv"
+                style={{ textDecoration: 'none' }}
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>

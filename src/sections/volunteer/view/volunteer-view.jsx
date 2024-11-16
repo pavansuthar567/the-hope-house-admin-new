@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CSVLink } from 'react-csv'; // Import CSVLink for CSV download
 
 import {
   Box,
@@ -57,14 +58,9 @@ const Volunteer = () => {
       item?.gender?.toLowerCase()?.includes(searchKey) ||
       item?.experience?.toLowerCase()?.includes(searchKey) ||
       item?.availability?.toLowerCase()?.includes(searchKey) ||
-      item?.skills?.some((skill) => skill.toLowerCase().includes(searchKey)) || // Adjusted this line
-      item?.address?.street?.toLowerCase()?.includes(searchKey) || // Check specific fields in address
       item?.address?.city?.toLowerCase()?.includes(searchKey) ||
       item?.address?.state?.toLowerCase()?.includes(searchKey) ||
-      item?.address?.zipCode?.toLowerCase()?.includes(searchKey) ||
-      item?.emergencyContact?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
-      item?.dateOfBirth?.toLowerCase()?.includes(searchKey) ||
-      item?.joinedDate?.toLowerCase()?.includes(searchKey)
+      item?.skills?.some((skill) => skill.toLowerCase().includes(searchKey))
     );
   });
 
@@ -169,6 +165,46 @@ const Volunteer = () => {
     ) : null;
   }, [open, crudVolunteerLoading]);
 
+  // Prepare data for CSV download with static headers
+  const csvData = useMemo(
+    () =>
+      filteredItems?.map((item) => ({
+        Id: item?.srNo,
+        FirstName: item?.firstName,
+        LastName: item?.lastName,
+        Email: item?.email,
+        PhoneNumber: item?.phoneNumber,
+        Gender: item?.gender,
+        Skills: item?.skills?.join(', '),
+        Experience: item?.experience,
+        Availability: item?.availability,
+        Address: `${item?.address?.city}, ${item?.address?.state}`,
+        CreatedAt: fhelper.formatAndDisplayDate(new Date(item?.createdAt)),
+        UpdatedAt: fhelper.formatAndDisplayDate(new Date(item?.updatedAt)),
+        CreatedBy: item?.createdBy?.username || 'N/A',
+        UpdatedBy: item?.updatedBy?.username || 'N/A',
+      })),
+    [filteredItems]
+  );
+
+  // Define CSV headers
+  const csvHeaders = [
+    { label: 'Id', key: 'Id' },
+    { label: 'First Name', key: 'FirstName' },
+    { label: 'Last Name', key: 'LastName' },
+    { label: 'Email', key: 'Email' },
+    { label: 'Phone Number', key: 'PhoneNumber' },
+    { label: 'Gender', key: 'Gender' },
+    { label: 'Skills', key: 'Skills' },
+    { label: 'Experience', key: 'Experience' },
+    { label: 'Availability', key: 'Availability' },
+    { label: 'Address', key: 'Address' },
+    { label: 'Created At', key: 'CreatedAt' },
+    { label: 'Updated At', key: 'UpdatedAt' },
+    { label: 'Created By', key: 'CreatedBy' },
+    { label: 'Updated By', key: 'UpdatedBy' },
+  ];
+
   return (
     <Container>
       {volunteerLoading ? (
@@ -214,6 +250,16 @@ const Volunteer = () => {
               >
                 New Volunteer
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename={'volunteers_data.csv'}
+                style={{ textDecoration: 'none' }}
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>
@@ -229,12 +275,9 @@ const Volunteer = () => {
                       <TableCell>Email</TableCell>
                       <TableCell className="text-nowrap">Phone Number</TableCell>
                       <TableCell>Gender</TableCell>
-                      <TableCell className="text-nowrap">Joined Date</TableCell>
-                      <TableCell>Skills</TableCell>
+                      <TableCell className="text-nowrap">Skills</TableCell>
                       <TableCell>Experience</TableCell>
-                      <TableCell>DOB</TableCell>
                       <TableCell>Availability</TableCell>
-                      <TableCell className="text-nowrap">Emergency Contact</TableCell>
                       <TableCell>Address</TableCell>
                       <TableCell className="text-nowrap">Created At</TableCell>
                       <TableCell className="text-nowrap">Updated At</TableCell>
@@ -254,28 +297,19 @@ const Volunteer = () => {
                             <TableCell>{x?.email}</TableCell>
                             <TableCell>{x?.phoneNumber}</TableCell>
                             <TableCell>{x?.gender}</TableCell>
-                            <TableCell className="text-nowrap">
-                              {fhelper.formatAndDisplayDate(new Date(x?.joinedDate))}
-                            </TableCell>
                             <TableCell className="!flex gap-2 flex-nowrap min-w-fit h-fit">
-                              {x?.skills?.map((x, i) => (
-                                <Label sx={{ m: 0 }} key={`skill-${x}-${i}`}>
-                                  {x}
+                              {x?.skills?.map((skill, i) => (
+                                <Label sx={{ m: 0 }} key={`skill-${skill}-${i}`}>
+                                  {skill}
                                 </Label>
                               ))}
                             </TableCell>
                             <TableCell className="min-w-fit flex text-nowrap">
                               {x?.experience}
                             </TableCell>
-                            <TableCell className="text-nowrap">
-                              {fhelper.formatAndDisplayDate(new Date(x?.dateOfBirth))}
-                            </TableCell>
-
                             <TableCell>{x?.availability}</TableCell>
-                            <TableCell>{x?.emergencyContact?.phoneNumber}</TableCell>
                             <TableCell className="text-nowrap">
-                              {x?.address?.street}, {x?.address?.city}, {x?.address?.state},{' '}
-                              {x?.address?.zipCode}
+                              {x?.address?.city}, {x?.address?.state}
                             </TableCell>
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}

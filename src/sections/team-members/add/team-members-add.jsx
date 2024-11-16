@@ -45,7 +45,7 @@ const validationSchema = Yup.object().shape({
   lastName: Yup.string()
     .max(100, 'Last name must be 100 characters or less')
     .required('Last name is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
+  // email: Yup.string().email('Invalid email').required('Email is required'),
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits')
     .required('Phone number is required'),
@@ -53,13 +53,12 @@ const validationSchema = Yup.object().shape({
   bio: Yup.string().required('Bio is required'),
   address: Yup.object().shape({
     street: Yup.string()
-      .max(255, 'Street must be 255 characters or less')
-      .required('Street is required'),
+      .max(255, 'Street must be 255 characters or less'),
     city: Yup.string().max(100, 'City must be 100 characters or less').required('City is required'),
     state: Yup.string().required('State is required'),
     zipCode: Yup.string()
       .matches(/^[0-9]{6}$/, 'ZIP code must be exactly 6 digits')
-      .required('ZIP code is required'),
+      .notRequired(),
   }),
   skills: Yup.array()
     .of(Yup.string().max(50, 'Skill must be 50 characters or less'))
@@ -78,10 +77,6 @@ const validationSchema = Yup.object().shape({
       .url('Twitter URL must be a valid URL')
       .max(100, 'Twitter URL must be 100 characters or less')
       .required('Twitter URL is required'),
-    facebook: Yup.string()
-      .url('Facebook URL must be a valid URL')
-      .max(100, 'Facebook URL must be 100 characters or less')
-      .required('Facebook URL is required'),
     instagram: Yup.string()
       .url('Instagram URL must be a valid URL')
       .max(100, 'Instagram URL must be 100 characters or less')
@@ -120,7 +115,6 @@ export default function AddTeamMember() {
         zipCode: fields?.address?.zipCode,
       },
       socialMediaLinks: {
-        facebook: fields?.socialMediaLinks?.facebook,
         instagram: fields?.socialMediaLinks?.instagram,
         linkedIn: fields?.socialMediaLinks?.linkedIn,
         twitter: fields?.socialMediaLinks?.twitter,
@@ -512,30 +506,6 @@ export default function AddTeamMember() {
                               width: '100%',
                             }}
                             onBlur={handleBlur}
-                            name="socialMediaLinks.facebook"
-                            label="Facebook Link"
-                            onChange={handleChange}
-                            value={values?.socialMediaLinks?.facebook || ''}
-                            error={
-                              !!(
-                                touched?.socialMediaLinks?.facebook &&
-                                errors?.socialMediaLinks?.facebook
-                              )
-                            }
-                            helperText={
-                              touched?.socialMediaLinks?.facebook &&
-                              errors?.socialMediaLinks?.facebook
-                                ? errors?.socialMediaLinks?.facebook
-                                : ''
-                            }
-                          />
-                        </Grid>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            sx={{
-                              width: '100%',
-                            }}
-                            onBlur={handleBlur}
                             name="socialMediaLinks.instagram"
                             label="Instagram Link"
                             onChange={handleChange}
@@ -554,8 +524,6 @@ export default function AddTeamMember() {
                             }
                           />
                         </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
                             sx={{
@@ -580,6 +548,8 @@ export default function AddTeamMember() {
                             }
                           />
                         </Grid>
+                      </Grid>
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
                             sx={{

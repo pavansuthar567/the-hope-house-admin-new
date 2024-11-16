@@ -30,6 +30,7 @@ import { fhelper } from 'src/_helpers';
 import { useNavigate } from 'react-router-dom';
 import { getBlogs, deleteBlog } from 'src/_services/blog.service';
 import Label from 'src/components/label';
+import { CSVLink } from 'react-csv'; // Import CSVLink for CSV export
 
 // ----------------------------------------------------------------------
 
@@ -114,6 +115,40 @@ const Testimonial = () => {
       setDeleteDialog(false);
     }
   }, [selectedBlogId]);
+
+  const csvHeaders = [
+    { label: 'Id', key: 'srNo' },
+    { label: 'Title', key: 'title' },
+    { label: 'Author', key: 'author' },
+    { label: 'Category', key: 'category' },
+    { label: 'Status', key: 'status' },
+    { label: 'Tags', key: 'tags' },
+    { label: 'Likes', key: 'likes' },
+    { label: 'Views', key: 'views' },
+    { label: 'Published Date', key: 'publishedDate' },
+    { label: 'Created By', key: 'createdBy.name' },
+    { label: 'Updated By', key: 'updatedBy.name' },
+  ];
+
+  const csvData = useMemo(() => {
+    return (
+      filteredItems?.map((item) => ({
+        srNo: item.srNo,
+        title: item.title,
+        author: item.author,
+        category: item.category,
+        status: item.status,
+        tags: item.tags.join(', '), // Join tags into a single string
+        likes: item.likes,
+        views: item.views,
+        publishedDate: item.publishedDate
+          ? fhelper.formatAndDisplayDate(new Date(item.publishedDate))
+          : '',
+        createdBy: item.createdBy?.name || 'N/A',
+        updatedBy: item.updatedBy?.name || 'N/A',
+      })) || []
+    );
+  }, [filteredItems]);
 
   const renderPopup = useMemo(() => {
     return !!open ? (
@@ -205,6 +240,17 @@ const Testimonial = () => {
               >
                 New Blog
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename={'blogs.csv'}
+                className="btn btn-primary"
+                target="_blank"
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>

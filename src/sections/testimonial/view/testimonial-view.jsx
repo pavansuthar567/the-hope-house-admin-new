@@ -27,9 +27,10 @@ import Scrollbar from 'src/components/scrollbar';
 import { Button } from 'src/components/button';
 import ConfirmationDialog from 'src/components/confirmation-dialog';
 import { setSelectedTestimonial } from 'src/store/slices/testimonialSlice';
-import Label from 'src/components/label';
 import { fhelper } from 'src/_helpers';
 import { useNavigate } from 'react-router-dom';
+import { CSVLink } from 'react-csv';
+import ProgressiveImg from 'src/components/progressive-img';
 
 // ----------------------------------------------------------------------
 
@@ -116,6 +117,37 @@ const Testimonial = () => {
       setDeleteDialog(false);
     }
   }, [selectedTestimonialId]);
+
+  const csvHeaders = useMemo(
+    () => [
+      { label: 'Id', key: 'srNo' },
+      { label: 'Name', key: 'name' },
+      { label: 'Designation', key: 'designation' },
+      { label: 'Message', key: 'message' },
+      { label: 'Image', key: 'image' },
+      { label: 'Created At', key: 'createdAt' },
+      { label: 'Updated At', key: 'updatedAt' },
+      { label: 'Created By', key: 'createdBy.username' },
+      { label: 'Updated By', key: 'updatedBy.username' },
+    ],
+    []
+  );
+
+  const csvData = useMemo(() => {
+    return (
+      filteredItems?.map((item) => ({
+        srNo: item.srNo,
+        name: item.name,
+        designation: item.designation || 'N/A',
+        message: item.message,
+        image: item.image,
+        createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
+        updatedAt: fhelper.formatAndDisplayDate(new Date(item.updatedAt)),
+        'createdBy.username': item.createdBy?.username || 'N/A',
+        'updatedBy.username': item.updatedBy?.username || 'N/A',
+      })) || []
+    );
+  }, [filteredItems]);
 
   const renderPopup = useMemo(() => {
     return !!open ? (
@@ -207,6 +239,16 @@ const Testimonial = () => {
               >
                 New Testimonial
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename="testimonials.csv"
+                style={{ textDecoration: 'none' }}
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>
@@ -217,10 +259,10 @@ const Testimonial = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Id</TableCell>
+                      <TableCell>Image</TableCell>
                       <TableCell className="text-nowrap">Name</TableCell>
                       <TableCell className="text-nowrap">Designation</TableCell>
-                      <TableCell>Message</TableCell>
-                      <TableCell>Image</TableCell>
+                      <TableCell sx={{ minWidth: '400px', width: '400px' }}>Message</TableCell>
                       <TableCell className="text-nowrap">Created At</TableCell>
                       <TableCell className="text-nowrap">Updated At</TableCell>
                       <TableCell className="text-nowrap">Created By</TableCell>
@@ -234,20 +276,16 @@ const Testimonial = () => {
                       ? filteredItems?.map((x, i) => (
                           <TableRow key={`testimonial-${i}`}>
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
+                            <TableCell className="overflow-hidden">
+                              <ProgressiveImg
+                                alt={x?.name}
+                                src={x?.image}
+                                customClassName={'max-h-10 h-10 w-10 object-contain rounded'}
+                              />
+                            </TableCell>
                             <TableCell>{x?.name}</TableCell>
                             <TableCell>{x?.designation || 'N/A'}</TableCell>
                             <TableCell>{x?.message}</TableCell>
-                            <TableCell>
-                              {x?.image ? (
-                                <img
-                                  src={x?.image}
-                                  alt={`${x?.name}`}
-                                  style={{ width: '50px', height: '50px', borderRadius: '50%' }}
-                                />
-                              ) : (
-                                ''
-                              )}
-                            </TableCell>
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
                             </TableCell>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CSVLink } from 'react-csv';
 
 import {
   Box,
@@ -162,6 +163,36 @@ const Recognition = () => {
     ) : null;
   }, [open, crudRecognitionLoading]);
 
+  // CSV Headers
+  const csvHeaders = [
+    { label: 'Id', key: 'srNo' },
+    { label: 'Title', key: 'title' },
+    { label: 'Type', key: 'type' },
+    { label: 'Description', key: 'description' },
+    { label: 'Date', key: 'date' },
+    { label: 'Created At', key: 'createdAt' },
+    { label: 'Updated At', key: 'updatedAt' },
+    { label: 'Created By', key: 'createdBy.username' },
+    { label: 'Updated By', key: 'updatedBy.username' },
+  ];
+
+  // Memoized CSV Data
+  const csvData = useMemo(() => {
+    return (
+      filteredItems?.map((item) => ({
+        srNo: item.srNo,
+        title: item.title,
+        type: item.type,
+        description: item.description,
+        date: fhelper.formatAndDisplayDate(new Date(item.date)),
+        createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
+        updatedAt: fhelper.formatAndDisplayDate(new Date(item.updatedAt)),
+        'createdBy.username': item.createdBy?.username || 'N/A',
+        'updatedBy.username': item.updatedBy?.username || 'N/A',
+      })) || []
+    );
+  }, [filteredItems]);
+
   return (
     <Container>
       {recognitionLoading ? (
@@ -207,6 +238,16 @@ const Recognition = () => {
               >
                 New Recognition
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename="recognition_data.csv"
+                className="btn btn-primary"
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>

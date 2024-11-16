@@ -18,7 +18,6 @@ export const teamMembersInitDetails = {
   socialMediaLinks: {
     linkedIn: '',
     twitter: '',
-    facebook: '',
     instagram: '',
   },
   profilePictureUrl: [],

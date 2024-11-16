@@ -20,6 +20,7 @@ import {
   TablePagination,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { CSVLink } from 'react-csv';
 
 import { fhelper } from 'src/_helpers';
 import Iconify from 'src/components/iconify';
@@ -154,6 +155,39 @@ const FaqssView = () => {
     ) : null;
   }, [open, crudFaqsLoading]);
 
+  // Prepare data for CSV download with static headers
+  const csvData = useMemo(
+    () =>
+      filteredItems?.map((item) => ({
+        Id: item?.srNo,
+        Category: item?.category,
+        Question: item?.question,
+        Answer:
+          item?.answer?.startsWith('<p>') && item?.answer?.endsWith('</p>')
+            ? item?.answer.slice(3, -4)
+            : item?.answer,
+        CreatedAt: fhelper.formatAndDisplayDate(new Date(item?.createdAt)),
+        UpdatedAt: item?.updatedAt
+          ? fhelper.formatAndDisplayDate(new Date(item?.updatedAt))
+          : 'N/A',
+        CreatedBy: item?.createdBy?.username || 'N/A',
+        UpdatedBy: item?.updatedBy?.username || 'N/A',
+      })),
+    [filteredItems]
+  );
+
+  // Define CSV headers
+  const csvHeaders = [
+    { label: 'Id', key: 'Id' },
+    { label: 'Category', key: 'Category' },
+    { label: 'Question', key: 'Question' },
+    { label: 'Answer', key: 'Answer' },
+    { label: 'Created At', key: 'CreatedAt' },
+    { label: 'Updated At', key: 'UpdatedAt' },
+    { label: 'Created By', key: 'CreatedBy' },
+    { label: 'Updated By', key: 'UpdatedBy' },
+  ];
+
   return (
     <Container>
       {faqsLoading ? (
@@ -199,6 +233,16 @@ const FaqssView = () => {
               >
                 New Faqs
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={csvHeaders}
+                filename={'faqs_data.csv'}
+                style={{ textDecoration: 'none' }}
+              >
+                <Button variant="contained">
+                  <Iconify icon="basil:file-download-solid" sx={{ width: 24, height: 24 }} />
+                </Button>
+              </CSVLink>
             </Box>
           </Box>
           <Card>
