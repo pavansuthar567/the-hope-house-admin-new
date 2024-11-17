@@ -18,6 +18,7 @@ import {
   updateTestimonial,
 } from 'src/_services/testimonial.service';
 import { setSelectedTestimonial, testimonialInitDetails } from 'src/store/slices/testimonialSlice';
+import { FileDrop } from 'src/components/file-drop';
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ const validationSchema = Yup.object().shape({
     .max(500, 'Message must be 500 characters or less')
     .required('Message is required'),
 
-  image: Yup.string().url('Image must be a valid URL'),
+  image: Yup.array().min(1).required('Image must be a valid URL'),
 });
 
 // ----------------------------------------------------------------------
@@ -59,6 +60,7 @@ export default function AddTestimonialPage() {
       const payload = {
         ...fields,
       };
+      delete payload.previewImage;
 
       let res;
       if (payload?._id) {
@@ -76,12 +78,25 @@ export default function AddTestimonialPage() {
     [dispatch, navigate]
   );
 
-  const { values, touched, errors, handleBlur, handleChange, handleSubmit } = useFormik({
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    ...restFormik
+  } = useFormik({
     onSubmit,
     enableReinitialize: true,
     initialValues: selectedTestimonial,
     validationSchema: validationSchema,
   });
+
+  const handleImageUpload = (files) => {
+    setFieldValue('image', files);
+  };
 
   return (
     <>
@@ -165,16 +180,24 @@ export default function AddTestimonialPage() {
                         </Grid>
                       </Grid>
 
-                      {/* Image URL */}
+                      {/* Image Upload */}
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
-                          <TextField
-                            sx={{ width: '100%' }}
-                            name="image"
-                            label="Image URL (optional)"
-                            onChange={handleChange}
-                            value={values.image || ''}
-                            onBlur={handleBlur}
+                          <FileDrop
+                            formik={{
+                              values,
+                              touched,
+                              errors,
+                              handleBlur,
+                              handleChange,
+                              setFieldValue,
+                              ...restFormik,
+                            }}
+                            deleteKey={'deleteUploadedImage'}
+                            mediaLimit={1}
+                            fileKey={'image'}
+                            previewKey={'previewImage'}
+                            loading={crudTestimonialLoading || testimonialLoading}
                           />
                         </Grid>
                       </Grid>

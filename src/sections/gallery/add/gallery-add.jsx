@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import MenuItem from '@mui/material/MenuItem';
 
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
@@ -15,13 +16,12 @@ import Spinner from 'src/components/spinner';
 import { FileDrop } from 'src/components/file-drop';
 import { LoadingButton } from 'src/components/button';
 import { galleryInitDetails, setSelectedGallery } from 'src/store/slices/gallerySlice';
+import { getEvents } from 'src/_services/events.service';
 
 // ----------------------------------------------------------------------
 
 const validationSchema = Yup.object().shape({
-  mission: Yup.string()
-    .max(100, 'Mission must be 100 characters or less')
-    .required('Mission is required'),
+  eventId: Yup.string().nullable(),
   caption: Yup.string().required('Type is required'),
   imageUrl: Yup.array().min(1).required('Image URL is required'),
 });
@@ -39,11 +39,18 @@ export default function AddGallery() {
     ({ gallery }) => gallery
   );
 
+  const { eventList = [], eventLoading } = useSelector(({ event }) => event);
+
   useEffect(() => {
     if (galleryId) dispatch(getGallery(galleryId));
   }, [galleryId]);
 
+  const loadData = async () => {
+    await dispatch(getEvents());
+  };
+
   useEffect(() => {
+    loadData();
     return () => dispatch(setSelectedGallery(galleryInitDetails));
   }, []);
 
@@ -97,7 +104,7 @@ export default function AddGallery() {
             overflow: 'initial',
           }}
         >
-          {galleryLoading ? (
+          {galleryLoading || eventLoading ? (
             <div className="flex justify-center items-center h-full">
               <Spinner />
             </div>
@@ -108,7 +115,7 @@ export default function AddGallery() {
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Details</Typography>
 
-                    <Typography variant="body2">Caption, Mission, Image...</Typography>
+                    <Typography variant="body2">Caption, Event, Image...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -137,17 +144,22 @@ export default function AddGallery() {
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            sx={{
-                              width: '100%',
-                            }}
-                            name="mission"
-                            label="Mission"
+                            select
+                            sx={{ width: '100%' }}
+                            name="eventId"
+                            label="Event"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values?.mission || ''}
-                            error={!!(touched?.mission && errors?.mission)}
-                            helperText={touched?.mission && errors?.mission ? errors?.mission : ''}
-                          />
+                            value={values?.eventId || ''}
+                            error={!!(touched?.eventId && errors?.eventId)}
+                            helperText={touched?.eventId && errors?.eventId ? errors?.eventId : ''}
+                          >
+                            {eventList.map((event) => (
+                              <MenuItem key={event?._id} value={event?._id}>
+                                {event?.eventName}
+                              </MenuItem>
+                            ))}
+                          </TextField>
                         </Grid>
                       </Grid>
                       <Grid container spacing={2} style={{ marginTop: 0 }}>

@@ -2,7 +2,6 @@ import { toast } from 'react-toastify';
 
 import { fhelper } from 'src/_helpers';
 import axios from 'axios';
-import { skills } from 'src/_helpers/constants';
 import {
   setCrudEventLoading,
   setSelectedEvent,
@@ -54,20 +53,20 @@ export const createEvent = (payload) => async (dispatch) => {
     if (files?.length) {
       try {
         urls = await dispatch(fileUpload(files));
-        if (urls?.length) obj.featuredImage = urls?.[0];
+        if (urls?.length) obj.featuredImage = urls;
       } catch (e) {
         toastError(e);
         return false;
       }
     } else {
-      obj.featuredImage = obj.featuredImage?.[0] || '';
+      obj.featuredImage = [];
     }
 
     delete obj.deleteUploadedfeaturedImage;
     const res = await axios.post('event', obj);
 
     if (res) {
-      toast.success('A event inserted successfully');
+      toast.success('Event inserted successfully');
       return true;
     }
     return false;
@@ -82,16 +81,16 @@ export const createEvent = (payload) => async (dispatch) => {
 export const updateEvent = (obj) => async (dispatch) => {
   try {
     if (obj && obj?._id) {
-      const { _id, __v, ...payload } = obj;
+      const { _id, __v, deleteUploadedfeaturedImage, ...payload } = obj;
       if (_id) {
         dispatch(setCrudEventLoading(true));
         let obj = { ...payload };
         let urls = [];
 
         // Delete old images from Cloudinary
-        if (obj?.deleteUploadedfeaturedImage && obj?.deleteUploadedfeaturedImage?.length) {
+        if (deleteUploadedfeaturedImage && deleteUploadedfeaturedImage.length) {
           try {
-            await dispatch(deleteFile(obj?.deleteUploadedfeaturedImage));
+            await dispatch(deleteFile(deleteUploadedfeaturedImage));
           } catch (e) {
             toastError(e);
             return false;
@@ -102,26 +101,32 @@ export const updateEvent = (obj) => async (dispatch) => {
         let files = [
           ...(obj?.featuredImage || [])?.filter((x) => x instanceof File || x instanceof Blob),
         ];
+
         if (files?.length) {
           try {
             urls = await dispatch(fileUpload(files));
-            if (urls?.length) obj.featuredImage = urls?.[0]?.image;
+            if (urls?.length)
+              obj.featuredImage = [
+                ...obj?.featuredImage?.filter((x) => x?.image),
+                ...urls?.map((x) => ({
+                  image: x,
+                })),
+              ];
           } catch (e) {
             toastError(e);
             return false;
           }
-        } else {
-          obj.featuredImage = obj.featuredImage?.[0]?.image;
         }
 
+        obj.featuredImage = obj?.featuredImage?.map((x) => x?.image) || [];
         delete obj.deleteUploadedfeaturedImage;
-        const res = await axios.put(`event/${_id}`, obj);
 
+        const res = await axios.put(`event/${_id}`, obj);
         if (res) {
-          toast.success('A event updated successfully');
+          toast.success('Event updated successfully');
           return true;
         } else {
-          toast.success('A event Id is required');
+          toast.success('Event ID is required');
           return false;
         }
       }
@@ -147,8 +152,9 @@ export const getEvent = (id) => async (dispatch) => {
       // Handling profile picture
       if (data?.featuredImage) {
         data.deleteUploadedfeaturedImage = [];
-        data.previewfeaturedImage = [{ image: data?.featuredImage, type: 'old' }];
-        data.featuredImage = [data?.featuredImage];
+        data.previewfeaturedImage =
+          data?.featuredImage?.map((image) => ({ image, type: 'old' })) || [];
+        data.featuredImage = data?.featuredImage || [];
       } else {
         data.featuredImage = []; // Clear if no profile picture
       }

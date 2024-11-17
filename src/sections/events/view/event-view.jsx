@@ -46,7 +46,8 @@ const Event = () => {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState();
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [currentImages, setCurrentImages] = useState([]);
 
   const { eventLoading, eventList, crudEventLoading } = useSelector(({ event }) => event);
 
@@ -127,14 +128,28 @@ const Event = () => {
     }
   }, [selectedEventId]);
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
+  const handleImageClick = (images, index) => {
+    setCurrentImages(images);
+    setSelectedImageIndex(index);
     setImageModalOpen(true);
   };
 
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
-    setSelectedImage('');
+    setCurrentImages([]);
+    setSelectedImageIndex(0);
+  };
+
+  const handleNextImage = () => {
+    if (selectedImageIndex < currentImages.length - 1) {
+      setSelectedImageIndex(selectedImageIndex + 1);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (selectedImageIndex > 0) {
+      setSelectedImageIndex(selectedImageIndex - 1);
+    }
   };
 
   const renderPopup = useMemo(() => {
@@ -313,11 +328,11 @@ const Event = () => {
                             <TableCell sx={{ width: '100px' }}>{x?.srNo}</TableCell>
                             <TableCell className="overflow-hidden">
                               <ProgressiveImg
-                                src={x?.featuredImage}
+                                src={x?.featuredImage?.[0]}
                                 customClassName={
                                   'max-h-10 h-10 w-10 object-contain rounded cursor-pointer'
                                 }
-                                onClick={() => handleImageClick(x?.featuredImage)}
+                                onClick={() => handleImageClick(x?.featuredImage, 0)}
                               />
                             </TableCell>
                             <TableCell>{x?.eventName}</TableCell>
@@ -384,7 +399,6 @@ const Event = () => {
           </Card>
         </>
       )}
-
       <Modal
         open={imageModalOpen}
         onClose={handleCloseImageModal}
@@ -393,29 +407,78 @@ const Event = () => {
         <Box
           sx={{
             position: 'relative',
-            backgroundColor: 'white',
-            padding: 2,
             borderRadius: 1,
             boxShadow: 24,
           }}
-          onClick={handleCloseImageModal}
         >
+          <img
+            src={currentImages[selectedImageIndex]}
+            alt="Full view"
+            style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+          />
           <Iconify
             icon="eva:close-fill"
+            width={24}
             sx={{
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              color: 'white',
+              borderRadius: '50%',
               position: 'absolute',
-              top: 0,
-              right: 0,
+              top: '-50px', // Positioning relative to the main modal
+              right: '-53px', // Positioning relative to the main modal
               cursor: 'pointer',
               zIndex: 1,
             }}
             onClick={handleCloseImageModal}
           />
-          <img
-            src={selectedImage}
-            alt="Full view"
-            style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
-          />
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              transform: 'translate(-50%, -50%)',
+              width: '100%',
+              padding: '0 20px', // Added padding for better spacing
+            }}
+          >
+            <Iconify
+              width={35}
+              icon="eva:arrow-back-fill"
+              onClick={handlePrevImage}
+              sx={{
+                cursor: 'pointer',
+                color: selectedImageIndex === 0 ? 'transparent' : 'white',
+                position: 'absolute',
+                left: '-60px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                backgroundColor: selectedImageIndex === 0 ? 'transparent' : 'rgba(0, 0, 0, 0.5)',
+                borderRadius: '50%',
+                padding: '5px',
+              }}
+            />
+            <Iconify
+              width={35}
+              icon="eva:arrow-forward-fill"
+              onClick={handleNextImage}
+              sx={{
+                cursor: 'pointer',
+                color: selectedImageIndex === currentImages.length - 1 ? 'transparent' : 'white',
+                position: 'absolute',
+                right: '-60px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                backgroundColor:
+                  selectedImageIndex === currentImages.length - 1
+                    ? 'transparent'
+                    : 'rgba(0, 0, 0, 0.5)',
+                borderRadius: '50%',
+                padding: '5px',
+              }}
+            />
+          </Box>
         </Box>
       </Modal>
 

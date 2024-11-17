@@ -9,6 +9,7 @@ import {
 import { fhelper } from 'src/_helpers';
 import { toastError } from '.';
 import axios from 'axios';
+import { fileUpload, deleteFile } from './upload.service';
 
 export const getTestimonials = () => async (dispatch) => {
   try {
@@ -44,7 +45,21 @@ export const deleteTestimonial = (id) => async (dispatch) => {
 export const createTestimonial = (payload) => async (dispatch) => {
   try {
     dispatch(setCrudTestimonialLoading(true));
-    const res = await axios.post('testimonial', payload);
+    let obj = { ...payload };
+    let urls = [];
+
+    // Handle image upload
+    let files = [...obj?.image?.filter((x) => typeof x === 'object')];
+
+    if (files?.length) {
+      urls = await dispatch(fileUpload(files));
+      if (urls?.length) obj.image = urls?.[0];
+    } else {
+      obj.image = obj.image?.[0];
+    }
+
+    delete obj.deleteUploadedImage;
+    const res = await axios.post('testimonial', obj);
 
     if (res) {
       toast.success('Testimonial inserted successfully');
@@ -63,9 +78,26 @@ export const updateTestimonial = (obj) => async (dispatch) => {
   if (!obj || !obj._id) return false;
 
   dispatch(setCrudTestimonialLoading(true));
-
   const { _id, srNo, __v, ...payload } = obj;
+
   try {
+    // Handle image upload
+    let urls = [];
+    let files = [...payload?.image?.filter((x) => typeof x === 'object')];
+
+    // Delete old images if any
+    if (payload.deleteUploadedImage && payload.deleteUploadedImage.length) {
+      await dispatch(deleteFile(payload.deleteUploadedImage));
+    }
+
+    if (files?.length) {
+      urls = await dispatch(fileUpload(files));
+      if (urls?.length) payload.image = urls[0];
+    } else {
+      payload.image = payload.image?.[0];
+    }
+
+    delete payload.deleteUploadedImage;
     const res = await axios.put(`testimonial/${_id}`, {
       ...payload,
       createdBy: payload.createdBy?._id,
@@ -94,6 +126,24 @@ export const getTestimonial = (id) => async (dispatch) => {
 
     if (res) {
       let data = { ...res?.data?.data };
+
+      // Handling preview image
+      if (data?.image) {
+        data.deleteUploadedImage = [];
+        data.previewImage = [{ image: data?.image, type: 'old' }];
+        data.image = [data?.image];
+      } else {
+        data.previewImage = []; // Clear if no image
+      }
+
+      // Optionally handle additional images (if applicable)
+      if (data?.image?.length) {
+        data.previewImage = data.image?.map((image) => ({
+          type: 'old',
+          image,
+        }));
+      }
+
       dispatch(setSelectedTestimonial(data));
       return res;
     }

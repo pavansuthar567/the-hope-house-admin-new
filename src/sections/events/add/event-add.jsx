@@ -69,7 +69,9 @@ const validationSchema = Yup.object().shape({
   registrationLink: Yup.string()
     .url('Registration link must be a valid URL')
     .required('Registration link is required'),
-  featuredImage: Yup.array().min(1).required('Featured image is required'),
+  featuredImage: Yup.array()
+    .min(1, 'At least one featured image is required')
+    .required('Featured image is required'),
   // previewfeaturedImage: Yup.array().of(
   //   Yup.string().url('Preview featured image must be a valid URL')
   // ),
@@ -530,6 +532,9 @@ export default function AddEvent() {
                       </Grid>
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12}>
+                          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                            Featured Images
+                          </Typography>
                           <FileDrop
                             formik={{
                               values,
@@ -542,11 +547,16 @@ export default function AddEvent() {
                               ...restFormik,
                             }}
                             deleteKey={'deleteUploadedfeaturedImage'}
-                            mediaLimit={1}
+                            mediaLimit={5}
                             fileKey={'featuredImage'}
                             previewKey={'previewfeaturedImage'}
                             loading={crudEventLoading || eventLoading}
                           />
+                          {touched.featuredImage && !values.featuredImage?.length && (
+                            <Typography variant="caption" color="error">
+                              At least one featured image is required.
+                            </Typography>
+                          )}
                         </Grid>
                       </Grid>
                     </Card>

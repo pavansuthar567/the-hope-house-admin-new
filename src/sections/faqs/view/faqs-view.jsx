@@ -275,6 +275,7 @@ const FaqssView = () => {
                               dangerouslySetInnerHTML={{
                                 __html: x?.answer,
                               }}
+                              sx={{ minWidth: '400px', width: '400px' }}
                             ></TableCell>
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
