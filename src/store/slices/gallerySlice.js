@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const galleryInitDetails = {
-  mission: '',
+  eventId: null,
   caption: '',
   imageUrl: [],
   previewImageUrl: [],

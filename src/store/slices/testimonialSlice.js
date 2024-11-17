@@ -4,7 +4,9 @@ export const testimonialInitDetails = {
   name: '',
   designation: '',
   message: '',
-  image: '',
+  image: [],
+  previewImage: [],
+  deleteUploadedImage: [],
 };
 
 const initialState = {
