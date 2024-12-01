@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 
 import { fhelper } from 'src/_helpers';
 import axios from 'axios';
-import { skills } from 'src/_helpers/constants';
+// import { skills } from 'src/_helpers/constants';
 import {
   setCrudTeamMembersLoading,
   setSelectedTeamMembers,
@@ -139,13 +139,13 @@ export const getTeamMember = (id) => async (dispatch) => {
 
     if (res) {
       let data = { ...res?.data?.data };
-      const skillsVals = skills?.map((x) => x?.value);
+      // const skillsVals = skills?.map((x) => x?.value);
 
-      // Handling skills
-      if (!skillsVals?.includes(data?.skills?.[0])) {
-        data.otherSkill = data?.skills?.[0];
-        data.skills = ['other'];
-      }
+      // // Handling skills
+      // if (!skillsVals?.includes(data?.skills?.[0])) {
+      //   data.otherSkill = data?.skills?.[0];
+      //   data.skills = ['other'];
+      // }
 
       // Handling profile picture
       if (data?.profilePictureUrl) {

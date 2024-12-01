@@ -36,17 +36,6 @@ export const roles = [
   },
 ];
 
-export const eventTypes = [
-  {
-    label: 'Virtual',
-    value: 'Virtual',
-  },
-  {
-    label: 'In-Person',
-    value: 'In-Person',
-  },
-];
-
 export const eventStatuses = [
   {
     label: 'Upcoming',
