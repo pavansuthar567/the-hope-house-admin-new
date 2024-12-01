@@ -56,12 +56,10 @@ const Event = () => {
     return (
       item?.eventName?.toLowerCase()?.includes(searchKey) ||
       item?.description?.toLowerCase()?.includes(searchKey) ||
-      item?.organizer?.toLowerCase()?.includes(searchKey) ||
+      item?.organizer?.name?.toLowerCase()?.includes(searchKey) ||
       item?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
-      item?.location?.venue?.toLowerCase()?.includes(searchKey) || // Check specific fields in location
-      item?.location?.city?.toLowerCase()?.includes(searchKey) ||
+      item?.location?.venue?.toLowerCase()?.includes(searchKey) ||
       item?.location?.state?.toLowerCase()?.includes(searchKey) ||
-      item?.location?.address?.toLowerCase()?.includes(searchKey) ||
       item?.startDate?.toLowerCase()?.includes(searchKey) ||
       item?.endDate?.toLowerCase()?.includes(searchKey) ||
       item?.capacity?.toLowerCase()?.includes(searchKey) ||
@@ -206,14 +204,14 @@ const Event = () => {
     { label: 'Start Date', key: 'startDate' },
     { label: 'End Date', key: 'endDate' },
     { label: 'Participants Registered', key: 'participantsRegistered' },
-    { label: 'Organizer', key: 'organizer' },
+    { label: 'Collaborator', key: 'organizer.name' },
     { label: 'Registration Link', key: 'registrationLink' },
     { label: 'Status', key: 'status' },
     { label: 'Location', key: 'location' },
     { label: 'Created At', key: 'createdAt' },
     { label: 'Updated At', key: 'updatedAt' },
-    { label: 'Created By', key: 'createdBy.username' },
-    { label: 'Updated By', key: 'updatedBy.username' },
+    { label: 'Created By', key: 'createdBy.name' },
+    { label: 'Updated By', key: 'updatedBy.name' },
   ];
 
   // Memoized CSV Data
@@ -226,14 +224,14 @@ const Event = () => {
       startDate: fhelper.formatAndDisplayDate(new Date(item.startDate)),
       endDate: fhelper.formatAndDisplayDate(new Date(item.endDate)),
       participantsRegistered: item.participantsRegistered,
-      organizer: item.organizer,
+      organizer: item.organizer?.name,
       registrationLink: item.registrationLink,
       status: item.status,
-      location: `${item.location?.venue}, ${item.location?.city}, ${item.location?.state}, ${item.location?.address}`,
+      location: `${item.location?.venue}, ${item.location?.state}`,
       createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
       updatedAt: fhelper.formatAndDisplayDate(new Date(item.updatedAt)),
-      createdBy: item.createdBy?.username || 'N/A',
-      updatedBy: item.updatedBy?.username || 'N/A',
+      createdBy: item.createdBy?.name || 'N/A',
+      updatedBy: item.updatedBy?.name || 'N/A',
     }));
   }, [filteredItems]);
 
@@ -309,7 +307,7 @@ const Event = () => {
                       <TableCell className="text-nowrap">Start Date</TableCell>
                       <TableCell className="text-nowrap">End Date</TableCell>
                       <TableCell>Participants Reg.</TableCell>
-                      <TableCell>Organizer</TableCell>
+                      <TableCell>Collaborator</TableCell>
                       <TableCell className="text-nowrap">Reg. Link</TableCell>
                       <TableCell>Status</TableCell>
                       <TableCell>Location</TableCell>
@@ -345,12 +343,11 @@ const Event = () => {
                               {fhelper.formatAndDisplayDate(new Date(x?.endDate))}
                             </TableCell>
                             <TableCell>{x?.participantsRegistered}</TableCell>
-                            <TableCell>{x?.organizer}</TableCell>
+                            <TableCell>{x?.organizer?.name}</TableCell>
                             <TableCell>{x?.registrationLink}</TableCell>
                             <TableCell>{x?.status}</TableCell>
                             <TableCell sx={{ minWidth: '300px' }}>
-                              {x?.location?.venue}, {x?.location?.city}, {x?.location?.state},{' '}
-                              {x?.location?.address}
+                              {x?.location?.venue}, {x?.location?.state}
                             </TableCell>
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.createdAt))}
@@ -358,8 +355,8 @@ const Event = () => {
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.updatedAt))}
                             </TableCell>
-                            <TableCell>{x?.createdBy?.username || 'N/A'}</TableCell>
-                            <TableCell>{x?.updatedBy?.username || 'N/A'}</TableCell>
+                            <TableCell>{x?.createdBy?.name || 'N/A'}</TableCell>
+                            <TableCell>{x?.updatedBy?.name || 'N/A'}</TableCell>
                             <TableCell sx={{ width: '50px' }}>
                               <Iconify
                                 className={'cursor-pointer'}

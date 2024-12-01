@@ -178,7 +178,7 @@ const TeamMembers = () => {
     { label: 'Role', key: 'role' },
     { label: 'Bio', key: 'bio' },
     { label: 'Date Of Joining', key: 'dateOfJoining' },
-    { label: 'Skills', key: 'skills' },
+    // { label: 'Skills', key: 'skills' },
     { label: 'Address', key: 'address' },
     { label: 'Created At', key: 'createdAt' },
     { label: 'Updated At', key: 'updatedAt' },
@@ -197,7 +197,7 @@ const TeamMembers = () => {
         role: item?.role,
         bio: item?.bio,
         dateOfJoining: fhelper.formatAndDisplayDate(new Date(item?.dateOfJoining)),
-        skills: item?.skills?.join(', '),
+        // skills: item?.skills?.join(', '),
         address: `${item?.address?.street}, ${item?.address?.city}, ${item?.address?.state}, ${item?.address?.zipCode}`,
         createdAt: fhelper.formatAndDisplayDate(new Date(item?.createdAt)),
         updatedAt: fhelper.formatAndDisplayDate(new Date(item?.updatedAt)),
@@ -290,7 +290,7 @@ const TeamMembers = () => {
                       <TableCell>Role</TableCell>
                       <TableCell>Bio</TableCell>
                       <TableCell className="text-nowrap">Date Of Joining</TableCell>
-                      <TableCell>Skills</TableCell>
+                      {/* <TableCell>Skills</TableCell> */}
                       <TableCell>Address</TableCell>
                       <TableCell className="text-nowrap">Created At</TableCell>
                       <TableCell className="text-nowrap">Updated At</TableCell>
@@ -323,13 +323,13 @@ const TeamMembers = () => {
                             <TableCell className="text-nowrap">
                               {fhelper.formatAndDisplayDate(new Date(x?.dateOfJoining))}
                             </TableCell>
-                            <TableCell className="">
+                            {/* <TableCell className="">
                               {x?.skills?.map((skill, i) => (
                                 <Label sx={{ m: 0 }} key={`skill-${skill}-${i}`}>
                                   {skill}
                                 </Label>
                               ))}
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell sx={{ minWidth: '300px' }}>
                               {x?.address?.street}, {x?.address?.city}, {x?.address?.state},{' '}
                               {x?.address?.zipCode}

@@ -9,8 +9,6 @@ export const eventInitDetails = {
   location: {
     venue: '',
     city: '',
-    state: '',
-    address: '',
   },
   capacity: 0,
   participantsRegistered: 0,

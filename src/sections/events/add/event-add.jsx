@@ -28,7 +28,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { eventStatuses, eventTypes, MenuProps } from 'src/_helpers/constants';
+import { blogCategories, eventStatuses, MenuProps } from 'src/_helpers/constants';
 import Label from 'src/components/label';
 import { FileDrop } from 'src/components/file-drop';
 import { getUsers } from 'src/_services/user.service';
@@ -42,18 +42,12 @@ const validationSchema = Yup.object().shape({
   description: Yup.string()
     .max(1000, 'Description must be 1000 characters or less')
     .required('Description is required'),
-  organizer: Yup.string()
-    .max(255, 'Organizer name must be 255 characters or less')
-    .required('Organizer is required'),
+  organizer: Yup.string().max(255, 'Collaborator name must be 255 characters or less').nullable(),
   location: Yup.object().shape({
     venue: Yup.string()
       .max(255, 'Venue name must be 255 characters or less')
       .required('Venue is required'),
-    city: Yup.string().max(100, 'City must be 100 characters or less').required('City is required'),
     state: Yup.string().required('State is required'),
-    address: Yup.string()
-      .max(255, 'Address must be 255 characters or less')
-      .required('Address is required'),
   }),
   startDate: Yup.date()
     .required('Start date is required')
@@ -64,7 +58,7 @@ const validationSchema = Yup.object().shape({
   capacity: Yup.number().min(1, 'Capacity must be at least 1').required('Capacity is required'),
   participantsRegistered: Yup.number()
     .min(0, 'Participants registered cannot be negative')
-    .required('Participants registered is required'),
+    .nullable(),
   eventType: Yup.string().required('Event type is required'),
   registrationLink: Yup.string()
     .url('Registration link must be a valid URL')
@@ -105,11 +99,11 @@ export default function AddEvent() {
   const onSubmit = useCallback(async (fields, { resetForm }) => {
     const payload = {
       ...fields,
+      organizer: fields?.organizer || null,
+      participantsRegistered: fields?.participantsRegistered || 0,
       location: {
         venue: fields?.location?.venue,
-        city: fields?.location?.city,
         state: fields?.location?.state,
-        address: fields?.location?.address,
       },
     };
     let res;
@@ -168,7 +162,7 @@ export default function AddEvent() {
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Details</Typography>
 
-                    <Typography variant="body2">Event Name, Desc, Organizer...</Typography>
+                    <Typography variant="body2">Event Name, Desc, Collaborator...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -217,16 +211,16 @@ export default function AddEvent() {
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6} m={0}>
                           <FormControl sx={{ width: '100%' }}>
-                            <InputLabel>Organizer</InputLabel>
+                            <InputLabel>Collaborator</InputLabel>
                             <Select
-                              label="Organizer"
+                              label="Collaborator"
                               name="organizer"
                               value={values.organizer || ''}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               input={
                                 <OutlinedInput
-                                  label="Organizer"
+                                  label="Collaborator"
                                   error={!!(touched?.organizer && errors?.organizer)}
                                   helperText={
                                     touched?.organizer && errors?.organizer ? errors?.organizer : ''
@@ -353,7 +347,7 @@ export default function AddEvent() {
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Location</Typography>
-                    <Typography variant="body2">Venue, City, State, Address...</Typography>
+                    <Typography variant="body2">Venue, State...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -385,26 +379,6 @@ export default function AddEvent() {
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            name="location.city"
-                            label="City"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values?.location?.city || ''}
-                            error={!!(touched?.location?.city && errors?.location?.city)}
-                            helperText={
-                              touched?.location?.city && errors?.location?.city
-                                ? errors?.location?.city
-                                : ''
-                            }
-                            sx={{
-                              width: '100%',
-                            }}
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
                             name="location.state"
                             label="State"
                             onBlur={handleBlur}
@@ -414,24 +388,6 @@ export default function AddEvent() {
                             helperText={
                               touched?.location?.state && errors?.location?.state
                                 ? errors?.location?.state
-                                : ''
-                            }
-                            sx={{
-                              width: '100%',
-                            }}
-                          />
-                        </Grid>
-                        <Grid xs={12} sm={6} md={6}>
-                          <TextField
-                            name="location.address"
-                            label="Address"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values?.location?.address || ''}
-                            error={!!(touched?.location?.address && errors?.location?.address)}
-                            helperText={
-                              touched?.location?.address && errors?.location?.address
-                                ? errors?.location?.address
                                 : ''
                             }
                             sx={{
@@ -514,7 +470,7 @@ export default function AddEvent() {
                               }
                               MenuProps={MenuProps}
                             >
-                              {eventTypes?.map((x, i) => (
+                              {blogCategories?.map((x, i) => (
                                 <MenuItem value={x?.value} key={`eventType-${i}`}>
                                   <Label key={x?.label} color={'default'}>
                                     {x?.label}

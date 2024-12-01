@@ -32,7 +32,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MenuProps, roles, skills } from 'src/_helpers/constants';
+import { MenuProps, roles } from 'src/_helpers/constants';
 import Label from 'src/components/label';
 import { FileDrop } from 'src/components/file-drop';
 
@@ -49,21 +49,20 @@ const validationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits')
     .required('Phone number is required'),
-  role: Yup.string().required('Role is required'),
-  bio: Yup.string().required('Bio is required'),
+  role: Yup.string().optional(),
+  bio: Yup.string().optional(),
   address: Yup.object().shape({
-    street: Yup.string()
-      .max(255, 'Street must be 255 characters or less'),
+    street: Yup.string().max(255, 'Street must be 255 characters or less'),
     city: Yup.string().max(100, 'City must be 100 characters or less').required('City is required'),
     state: Yup.string().required('State is required'),
     zipCode: Yup.string()
       .matches(/^[0-9]{6}$/, 'ZIP code must be exactly 6 digits')
       .notRequired(),
   }),
-  skills: Yup.array()
-    .of(Yup.string().max(50, 'Skill must be 50 characters or less'))
-    .min(1, 'At least one skill is required')
-    .required('Skills are required'),
+  // skills: Yup.array()
+  //   .of(Yup.string().max(50, 'Skill must be 50 characters or less'))
+  //   .min(1, 'At least one skill is required')
+  //   .required('Skills are required'),
   dateOfJoining: Yup.date()
     .required('Date of joining is required')
     .max(new Date(), 'Date of joining must be in the past or today'),
@@ -71,16 +70,13 @@ const validationSchema = Yup.object().shape({
   socialMediaLinks: Yup.object().shape({
     linkedIn: Yup.string()
       .url('LinkedIn URL must be a valid URL')
-      .max(100, 'LinkedIn URL must be 100 characters or less')
-      .required('LinkedIn URL is required'),
+      .max(100, 'LinkedIn URL must be 100 characters or less'),
     twitter: Yup.string()
       .url('Twitter URL must be a valid URL')
-      .max(100, 'Twitter URL must be 100 characters or less')
-      .required('Twitter URL is required'),
+      .max(100, 'Twitter URL must be 100 characters or less'),
     instagram: Yup.string()
       .url('Instagram URL must be a valid URL')
-      .max(100, 'Instagram URL must be 100 characters or less')
-      .required('Instagram URL is required'),
+      .max(100, 'Instagram URL must be 100 characters or less'),
   }),
 });
 
@@ -119,7 +115,7 @@ export default function AddTeamMember() {
         linkedIn: fields?.socialMediaLinks?.linkedIn,
         twitter: fields?.socialMediaLinks?.twitter,
       },
-      skills: fields?.skills.includes('other') ? [fields?.otherSkill] : fields?.skills,
+      // skills: fields?.skills.includes('other') ? [fields?.otherSkill] : fields?.skills,
     };
     let res;
     delete payload.otherSkill;
@@ -152,14 +148,15 @@ export default function AddTeamMember() {
     validationSchema,
   });
 
-  const handleOtherSkillChange = (e) => {
-    dispatch(setSelectedTeamMembers({ ...values, otherSkill: e.target.value }));
-  };
+  // const handleOtherSkillChange = (e) => {
+  //   dispatch(setSelectedTeamMembers({ ...values, otherSkill: e.target.value }));
+  // };
 
-  const handleChangeSkills = (event) => {
-    const { value } = event.target;
-    setFieldValue('skills', value === 'other' ? ['other'] : [value]);
-  };
+  // const handleChangeSkills = (event) => {
+  //   const { value } = event.target;
+  //   setFieldValue('skills', value === 'other' ? ['other'] : [value]);
+  // };
+
   return (
     <>
       <Container sx={{ height: '100%' }}>
@@ -389,7 +386,7 @@ export default function AddTeamMember() {
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Specifications</Typography>
-                    <Typography variant="body2">Role, skills, bio, social media link...</Typography>
+                    <Typography variant="body2">Role, bio, social media link...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
@@ -402,37 +399,16 @@ export default function AddTeamMember() {
                     >
                       <Grid container spacing={2} m={0}>
                         <Grid xs={12} sm={6} md={6}>
-                          <FormControl sx={{ width: '100%' }}>
-                            <InputLabel>Role</InputLabel>
-                            <Select
-                              label="Role"
-                              name="role"
-                              value={values.role || ''}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              input={
-                                <OutlinedInput
-                                  label="Role"
-                                  error={!!(touched?.role && errors?.role)}
-                                  helperText={touched?.role && errors?.role ? errors?.role : ''}
-                                />
-                              }
-                              MenuProps={MenuProps}
-                            >
-                              {roles?.map((x, i) => (
-                                <MenuItem value={x?.value} key={`role-${i}`}>
-                                  <Label key={x?.label} color={'default'}>
-                                    {x?.label}
-                                  </Label>
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {touched.role && errors.role && (
-                              <Typography variant="caption" color="error">
-                                {errors.role}
-                              </Typography>
-                            )}
-                          </FormControl>
+                          <TextField
+                            sx={{ width: '100%' }}
+                            onBlur={handleBlur}
+                            name="role"
+                            label="Role"
+                            onChange={handleChange}
+                            value={values.role || ''}
+                            error={!!(touched?.role && errors?.role)}
+                            helperText={touched?.role && errors?.role ? errors?.role : ''}
+                          />
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
@@ -449,7 +425,7 @@ export default function AddTeamMember() {
                           />
                         </Grid>
                       </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                      {/* <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={12} md={12}>
                           <FormControl sx={{ width: '100%' }}>
                             <InputLabel>Skills</InputLabel>
@@ -498,7 +474,7 @@ export default function AddTeamMember() {
                             )}
                           </FormControl>
                         </Grid>
-                      </Grid>
+                      </Grid> */}
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField

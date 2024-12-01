@@ -14,7 +14,6 @@ export const teamMembersInitDetails = {
   role: '',
   bio: '',
   dateOfJoining: '',
-  skills: [],
   socialMediaLinks: {
     linkedIn: '',
     twitter: '',
