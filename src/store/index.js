@@ -12,7 +12,7 @@ import teamMembers from './slices/teamMembersSlice';
 import testimonial from './slices/testimonialSlice';
 import recognition from './slices/recognitionSlice';
 import blog from './slices/blogSlice';
-
+import message from './slices/messageSlice';
 // ----------------------------------------------------------------------
 
 const reducers = combineReducers({
@@ -28,6 +28,7 @@ const reducers = combineReducers({
   recognition,
   testimonial,
   blog,
+  message,
 });
 
 // ----------------------------------------------------------------------
