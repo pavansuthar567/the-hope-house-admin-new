@@ -30,6 +30,7 @@ export const AddGalleryPage = lazy(() => import('src/pages/gallery/add'));
 export const GalleryPage = lazy(() => import('src/pages/gallery/gallery'));
 export const AddBlogPage = lazy(() => import('src/pages/blog/add'));
 export const BlogPage = lazy(() => import('src/pages/blog/blog'));
+export const MessagePage = lazy(() => import('src/pages/message/message'));
 
 // ----------------------------------------------------------------------
 
@@ -194,6 +195,14 @@ export default function Router() {
           element: (
             // <ProtectedRoutes pageId={'volunteer'}>
             <AddRecognitionPage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'message',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <MessagePage />
             // </ProtectedRoutes>
           ),
         },

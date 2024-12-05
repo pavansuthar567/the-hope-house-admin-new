@@ -17,6 +17,7 @@ import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
 import InsertPhotoTwoToneIcon from '@mui/icons-material/InsertPhotoTwoTone';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+import MessageIcon from '@mui/icons-material/Message';
 
 // import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
@@ -107,6 +108,13 @@ const navConfig = [
     path: '/recognition',
     icon: <WorkspacePremiumTwoToneIcon />,
     children: ['/recognition', '/recognition/add'],
+  },
+  {
+    title: 'message',
+    pageId: 'message',
+    path: '/message',
+    icon: <MessageIcon />,
+    children: ['/message'],
   },
   // {
   //   title: 'brand',
