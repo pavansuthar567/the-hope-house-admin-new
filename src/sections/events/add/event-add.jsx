@@ -17,6 +17,7 @@ import {
   InputLabel,
   Select,
   OutlinedInput,
+  FormHelperText,
 } from '@mui/material';
 
 import { eventInitDetails, setSelectedEvent } from 'src/store/slices/eventSlice';
@@ -32,6 +33,7 @@ import { blogCategories, eventStatuses, MenuProps } from 'src/_helpers/constants
 import Label from 'src/components/label';
 import { FileDrop } from 'src/components/file-drop';
 import { getUsers } from 'src/_services/user.service';
+import { Editor } from 'src/components/editor';
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +61,9 @@ const validationSchema = Yup.object().shape({
   participantsRegistered: Yup.number()
     .min(0, 'Participants registered cannot be negative')
     .nullable(),
+  content: Yup.string()
+    .min(20, 'Content must be at least 20 characters long')
+    .required('Content is required'),
   eventType: Yup.string().required('Event type is required'),
   registrationLink: Yup.string()
     .url('Registration link must be a valid URL')
@@ -400,6 +405,42 @@ export default function AddEvent() {
                   </Grid>
                 </Grid>
 
+                <Grid container spacing={3}>
+                  <Grid xs={12} sm={4} md={4}>
+                    <Typography variant="h6">Event Content</Typography>
+                    <Typography variant="body2">Content...</Typography>
+                  </Grid>
+                  <Grid xs={12} sm={8} md={8}>
+                    <Card
+                      component={Stack}
+                      spacing={2}
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        overflow: 'initial !important',
+                      }}
+                    >
+                      <Grid container spacing={2} mt={2}>
+                        <Grid xs={12}>
+                          <Editor
+                            name={'content'}
+                            onChange={(e, editor) => {
+                              const data = editor.getData();
+                              setFieldValue('content', data);
+                            }}
+                            data={values?.content || ''}
+                            className={touched?.content && errors?.content ? 'error' : ''}
+                          />
+                          {touched?.content && errors?.content && (
+                            <FormHelperText sx={{ color: 'error.main', px: 2 }}>
+                              {errors?.content}
+                            </FormHelperText>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Card>
+                  </Grid>
+                </Grid>
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Specifications</Typography>

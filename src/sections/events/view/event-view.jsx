@@ -58,6 +58,7 @@ const Event = () => {
       item?.description?.toLowerCase()?.includes(searchKey) ||
       item?.organizer?.name?.toLowerCase()?.includes(searchKey) ||
       item?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
+      item?.content?.toLowerCase()?.includes(searchKey) ||
       item?.location?.venue?.toLowerCase()?.includes(searchKey) ||
       item?.location?.state?.toLowerCase()?.includes(searchKey) ||
       item?.startDate?.toLowerCase()?.includes(searchKey) ||

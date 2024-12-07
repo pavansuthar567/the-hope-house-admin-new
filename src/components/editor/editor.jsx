@@ -393,6 +393,16 @@ const Editor = forwardRef(({ sx = {}, style = {}, ...other }, ref) => {
           menuBar: {
             isVisible: true,
           },
+          htmlEmbed: {
+            showPreviews: true,
+            sanitizeHtml: (inputHtml) => {
+              const outputHtml = inputHtml;
+              return {
+                html: outputHtml,
+                hasChanged: false,
+              };
+            },
+          },
         }}
         {...other}
       />
