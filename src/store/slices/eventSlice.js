@@ -14,6 +14,7 @@ export const eventInitDetails = {
   participantsRegistered: 0,
   registrationLink: '',
   eventType: 'Virtual',
+  content: '',
   featuredImage: [],
   previewfeaturedImage: [],
   deleteUploadedfeaturedImage: [],
