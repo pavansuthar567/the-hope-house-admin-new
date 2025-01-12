@@ -7,6 +7,7 @@ import {
   setSelectedEvent,
   setEventList,
   setEventLoading,
+  eventInitDetails,
 } from 'src/store/slices/eventSlice';
 import { toastError } from '.';
 import { deleteFile, fileUpload } from './upload.service';
@@ -167,7 +168,7 @@ export const getEvent = (id) => async (dispatch) => {
         }));
       }
 
-      dispatch(setSelectedEvent(data));
+      dispatch(setSelectedEvent({ ...eventInitDetails, ...data }));
       return res;
     }
 

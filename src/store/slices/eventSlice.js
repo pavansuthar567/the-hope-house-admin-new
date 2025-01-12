@@ -19,6 +19,7 @@ export const eventInitDetails = {
   previewfeaturedImage: [],
   deleteUploadedfeaturedImage: [],
   status: '',
+  whatsappLink: '',
 };
 
 const initialState = {
