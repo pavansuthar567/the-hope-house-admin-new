@@ -10,7 +10,6 @@ import { grey } from 'src/theme/palette';
 import Iconify from '../iconify';
 import filesFolder from '../../../public/assets/illustrations/files.svg';
 import PdfViewer from '../pdf-viewer';
-import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +20,7 @@ const imageTypes = '.png, .jpg, .jpeg, .webp';
 const videoReg = /video\/(mp4|webm|ogg)/;
 const videoTypes = '.mp4, .webm, .ogg';
 const TENMB = 10485760;
+const TWENTY_MB = 20971520;
 // const HUNDRED_MB = 104857600;
 const FIVEMB = 5242880;
 
@@ -84,10 +84,10 @@ const FileDrop = forwardRef(
 
             //FIX BUG HERE
             // Validate the image size.
-            if (file.size > (mediaType === 'video' ? TENMB : FIVEMB)) {
+            if (file.size > (mediaType === 'video' ? TENMB : TWENTY_MB)) {
               // size in bytes
               toast.error(
-                `Invalid Size! (Only ${mediaType === 'video' ? 100 : 5} MB are allowed!)`
+                `Invalid Size! (Only ${mediaType === 'video' ? 100 : 10} MB are allowed!)`
               );
               return;
             }

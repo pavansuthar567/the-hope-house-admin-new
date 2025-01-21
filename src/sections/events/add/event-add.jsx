@@ -68,6 +68,9 @@ const validationSchema = Yup.object().shape({
   registrationLink: Yup.string()
     .url('Registration link must be a valid URL')
     .required('Registration link is required'),
+  whatsappLink: Yup.string()
+    .url('WhatsApp link must be a valid URL')
+    .required('WhatsApp link is required'),
   featuredImage: Yup.array()
     .min(1, 'At least one featured image is required')
     .required('Featured image is required'),
@@ -214,7 +217,7 @@ export default function AddEvent() {
                         </Grid>
                       </Grid>
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6} m={0}>
+                        {/* <Grid xs={12} sm={6} md={6} m={0}>
                           <FormControl sx={{ width: '100%' }}>
                             <InputLabel>Collaborator</InputLabel>
                             <Select
@@ -246,7 +249,7 @@ export default function AddEvent() {
                               </Typography>
                             )}
                           </FormControl>
-                        </Grid>
+                        </Grid> */}
                         <Grid xs={12} sm={6} md={6} m={0}>
                           <TextField
                             sx={{
@@ -263,10 +266,8 @@ export default function AddEvent() {
                               touched?.capacity && errors?.capacity ? errors?.capacity : ''
                             }
                           />
-                        </Grid>
-                      </Grid>
-                      <Grid container spacing={2} style={{ marginTop: 0 }}>
-                        <Grid xs={12} sm={6} md={6} m={0}>
+                          </Grid>
+                          <Grid xs={12} sm={6} md={6} m={0}>
                           <TextField
                             sx={{
                               width: '100%',
@@ -287,6 +288,8 @@ export default function AddEvent() {
                             }
                           />
                         </Grid>
+                      </Grid>
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6} m={0}>
                           <TextField
                             sx={{
@@ -301,6 +304,24 @@ export default function AddEvent() {
                             helperText={
                               touched?.registrationLink && errors?.registrationLink
                                 ? errors?.registrationLink
+                                : ''
+                            }
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6} md={6} m={0}>
+                          <TextField
+                            sx={{
+                              width: '100%',
+                            }}
+                            onBlur={handleBlur}
+                            name="whatsappLink"
+                            label="WhatsApp Link"
+                            onChange={handleChange}
+                            value={values?.whatsappLink || ''}
+                            error={!!(touched?.whatsappLink && errors?.whatsappLink)}
+                            helperText={
+                              touched?.whatsappLink && errors?.whatsappLink
+                                ? errors?.whatsappLink
                                 : ''
                             }
                           />

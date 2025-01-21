@@ -56,7 +56,7 @@ const Event = () => {
     return (
       item?.eventName?.toLowerCase()?.includes(searchKey) ||
       item?.description?.toLowerCase()?.includes(searchKey) ||
-      item?.organizer?.name?.toLowerCase()?.includes(searchKey) ||
+      // item?.organizer?.name?.toLowerCase()?.includes(searchKey) ||
       item?.phoneNumber?.toLowerCase()?.includes(searchKey) ||
       item?.content?.toLowerCase()?.includes(searchKey) ||
       item?.location?.venue?.toLowerCase()?.includes(searchKey) ||
@@ -205,8 +205,9 @@ const Event = () => {
     { label: 'Start Date', key: 'startDate' },
     { label: 'End Date', key: 'endDate' },
     { label: 'Participants Registered', key: 'participantsRegistered' },
-    { label: 'Collaborator', key: 'organizer.name' },
+    // { label: 'Collaborator', key: 'organizer.name' },
     { label: 'Registration Link', key: 'registrationLink' },
+    { label: 'WhatsApp Link', key: 'whatsappLink' },
     { label: 'Status', key: 'status' },
     { label: 'Location', key: 'location' },
     { label: 'Created At', key: 'createdAt' },
@@ -225,8 +226,9 @@ const Event = () => {
       startDate: fhelper.formatAndDisplayDate(new Date(item.startDate)),
       endDate: fhelper.formatAndDisplayDate(new Date(item.endDate)),
       participantsRegistered: item.participantsRegistered,
-      organizer: item.organizer?.name,
+      // organizer: item.organizer?.name,
       registrationLink: item.registrationLink,
+      whatsappLink: item.whatsappLink,
       status: item.status,
       location: `${item.location?.venue}, ${item.location?.state}`,
       createdAt: fhelper.formatAndDisplayDate(new Date(item.createdAt)),
@@ -308,8 +310,9 @@ const Event = () => {
                       <TableCell className="text-nowrap">Start Date</TableCell>
                       <TableCell className="text-nowrap">End Date</TableCell>
                       <TableCell>Participants Reg.</TableCell>
-                      <TableCell>Collaborator</TableCell>
+                      {/* <TableCell>Collaborator</TableCell> */}
                       <TableCell className="text-nowrap">Reg. Link</TableCell>
+                      <TableCell className="text-nowrap">WhatsApp Link</TableCell>
                       <TableCell>Status</TableCell>
                       <TableCell>Location</TableCell>
                       <TableCell className="text-nowrap">Created At</TableCell>
@@ -344,8 +347,9 @@ const Event = () => {
                               {fhelper.formatAndDisplayDate(new Date(x?.endDate))}
                             </TableCell>
                             <TableCell>{x?.participantsRegistered}</TableCell>
-                            <TableCell>{x?.organizer?.name}</TableCell>
+                            {/* <TableCell>{x?.organizer?.name}</TableCell> */}
                             <TableCell>{x?.registrationLink}</TableCell>
+                            <TableCell>{x?.whatsappLink}</TableCell>
                             <TableCell>{x?.status}</TableCell>
                             <TableCell sx={{ minWidth: '300px' }}>
                               {x?.location?.venue}, {x?.location?.state}

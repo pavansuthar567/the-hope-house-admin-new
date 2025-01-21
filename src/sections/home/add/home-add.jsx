@@ -225,6 +225,27 @@ export default function AddHome() {
                           />
                         </Grid>
                       </Grid>
+                    </Card>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
+                  <Grid xs={12} sm={4} md={4}>
+                    <Typography variant="h6">Details</Typography>
+
+                    <Typography variant="body2">
+                      Logo, Quote, Hero Section Video, Who We Are, What We Do...
+                    </Typography>
+                  </Grid>
+                  <Grid xs={12} sm={8} md={8}>
+                    <Card
+                      component={Stack}
+                      spacing={2}
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        overflow: 'initial !important',
+                      }}
+                    >
                       <Grid container spacing={2} style={{ marginTop: '0' }}>
                         <Grid xs={12}>
                           <Typography variant="subtitle2">Terms Of Use</Typography>
