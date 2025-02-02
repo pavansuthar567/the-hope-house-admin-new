@@ -9,6 +9,7 @@ export const quoteInitDetails = {
 
 const initialState = {
   quoteList: [],
+  alertList: [],
   perPageCount: 12,
   quoteLoading: false,
   crudQuoteLoading: false,
@@ -22,6 +23,9 @@ const quoteSlice = createSlice({
   reducers: {
     setQuoteList: (state, action) => {
       state.quoteList = action.payload;
+    },
+    setAlertList: (state, action) => {
+      state.alertList = action.payload;
     },
     setPerPageCount: (state, action) => {
       state.perPageCount = action.payload;
@@ -43,6 +47,7 @@ const quoteSlice = createSlice({
 
 export const {
   setQuoteList,
+  setAlertList,
   setPerPageCount,
   setQuoteLoading,
   setSelectedQuote,

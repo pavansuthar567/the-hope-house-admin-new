@@ -22,6 +22,7 @@ export const AddFaqsPage = lazy(() => import('src/pages/faqs/add'));
 export const FaqsPage = lazy(() => import('src/pages/faqs/faqs'));
 export const AddQuotePage = lazy(() => import('src/pages/quote/add'));
 export const QuotePage = lazy(() => import('src/pages/quote/quote'));
+export const AlertPage = lazy(() => import('src/pages/market-alert/alert'));
 export const AddHomePage = lazy(() => import('src/pages/home/add'));
 export const HomePage = lazy(() => import('src/pages/home/home'));
 export const AddRecognitionPage = lazy(() => import('src/pages/recognition/add'));
@@ -155,6 +156,14 @@ export default function Router() {
           element: (
             // <ProtectedRoutes pageId={'volunteer'}>
             <QuotePage />
+            // </ProtectedRoutes>
+          ),
+        },
+        {
+          path: 'market-alert',
+          element: (
+            // <ProtectedRoutes pageId={'volunteer'}>
+            <AlertPage />
             // </ProtectedRoutes>
           ),
         },

@@ -5,10 +5,12 @@ import {
   setQuoteList,
   setCrudQuoteLoading,
   setSelectedQuote,
+  setAlertList,
 } from 'src/store/slices/quoteSlice';
 import { fhelper } from 'src/_helpers';
 import axios from 'axios';
 import { toastError } from '.';
+import _ from 'lodash';
 
 export const getQuotes = () => async (dispatch) => {
   try {
@@ -96,6 +98,24 @@ export const getQuote = (id) => async (dispatch) => {
       return res;
     }
     return false;
+  } catch (e) {
+    toastError(e);
+    return false;
+  } finally {
+    dispatch(setQuoteLoading(false));
+  }
+};
+
+export const getAlerts = () => async (dispatch) => {
+  try {
+    dispatch(setQuoteLoading(true));
+    const res = await axios.get('dashboard/webhooks/tradingview');
+    const data = res?.data?.data?.map((x, i) => ({ srNo: i + 1, ...x }));
+
+    const updated = _.orderBy(data, ['createdAt'], ['desc']);
+    await dispatch(setAlertList(updated || []));
+
+    return true;
   } catch (e) {
     toastError(e);
     return false;
