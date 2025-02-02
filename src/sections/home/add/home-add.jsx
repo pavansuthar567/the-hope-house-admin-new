@@ -230,6 +230,97 @@ export default function AddHome() {
                 </Grid>
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
+                    <Typography variant="h6">Analytics</Typography>
+
+                    <Typography variant="body2">Impact Metrics...</Typography>
+                  </Grid>
+                  <Grid xs={12} sm={8} md={8}>
+                    <Card
+                      component={Stack}
+                      spacing={2}
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        overflow: 'initial !important',
+                      }}
+                    >
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                        <Grid xs={12} sm={6} md={6}>
+                          <TextField
+                            sx={{
+                              width: '100%',
+                            }}
+                            type="number"
+                            onBlur={handleBlur}
+                            name="beneficiaryServed"
+                            label="Beneficiary Served"
+                            onChange={handleChange}
+                            value={values?.whoWeAre || ''}
+                            error={!!(touched?.whoWeAre && errors?.whoWeAre)}
+                            helperText={
+                              touched?.whoWeAre && errors?.whoWeAre ? errors?.whoWeAre : ''
+                            }
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6} md={6} m={0}>
+                          <TextField
+                            sx={{
+                              width: '100%',
+                            }}
+                            type="number"
+                            onBlur={handleBlur}
+                            name="totalVolunteers"
+                            label="Total Volunteers"
+                            onChange={handleChange}
+                            value={values?.whatWeDo || ''}
+                            error={!!(touched?.whatWeDo && errors?.whatWeDo)}
+                            helperText={
+                              touched?.whatWeDo && errors?.whatWeDo ? errors?.whatWeDo : ''
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                        <Grid xs={12} sm={6} md={6}>
+                          <TextField
+                            sx={{
+                              width: '100%',
+                            }}
+                            type="number"
+                            onBlur={handleBlur}
+                            name="cityPresence"
+                            label="City Presence"
+                            onChange={handleChange}
+                            value={values?.heroSectionVideo || ''}
+                            error={!!(touched?.heroSectionVideo && errors?.heroSectionVideo)}
+                            helperText={
+                              touched?.heroSectionVideo && errors?.heroSectionVideo
+                                ? errors?.heroSectionVideo
+                                : ''
+                            }
+                          />
+                        </Grid>
+                        <Grid xs={12} sm={6} md={6}>
+                          <TextField
+                            sx={{
+                              width: '100%',
+                            }}
+                            type="number"
+                            onBlur={handleBlur}
+                            name="donationReceived"
+                            label="Rs. Donation Received"
+                            onChange={handleChange}
+                            value={values?.quote || ''}
+                            error={!!(touched?.quote && errors?.quote)}
+                            helperText={touched?.quote && errors?.quote ? errors?.quote : ''}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Card>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
+                  <Grid xs={12} sm={4} md={4}>
                     <Typography variant="h6">Details</Typography>
 
                     <Typography variant="body2">
