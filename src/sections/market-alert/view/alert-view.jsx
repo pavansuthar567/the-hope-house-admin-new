@@ -117,7 +117,7 @@ const AlertView = () => {
 
   const csvData = useMemo(() => {
     return (
-      filteredItems?.map((item) => ({
+      alertList?.map((item) => ({
         _id: item._id,
         message: item.rawData?.message,
         timestamp: fhelper.formatAndDisplayDate(new Date(item.timestamp)),

@@ -266,8 +266,8 @@ export default function AddEvent() {
                               touched?.capacity && errors?.capacity ? errors?.capacity : ''
                             }
                           />
-                          </Grid>
-                          <Grid xs={12} sm={6} md={6} m={0}>
+                        </Grid>
+                        <Grid xs={12} sm={6} md={6} m={0}>
                           <TextField
                             sx={{
                               width: '100%',

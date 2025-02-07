@@ -13,6 +13,12 @@ export const homeInitDetails = {
   isActive: false,
   termsOfUse: '',
   privacyPolicy: '',
+  statistics: {
+    beneficiaryServed: '0',
+    totalVolunteers: '0',
+    cityPresence: '0',
+    donationReceived: '0',
+  },
 };
 
 const initialState = {

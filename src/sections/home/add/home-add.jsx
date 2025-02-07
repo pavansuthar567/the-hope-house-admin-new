@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import { Card, Box, TextField } from '@mui/material';
+import { Card, Box, TextField, FormHelperText } from '@mui/material';
 
 import Spinner from 'src/components/spinner';
 import { Editor } from 'src/components/editor';
@@ -22,13 +22,16 @@ import { createHome, getHome, updateHome } from 'src/_services/home.service';
 const validationSchema = Yup.object().shape({
   quote: Yup.string()
     .required('Quote is required')
-    .max(200, 'Quote must be 200 characters or less'),
+    .max(200, 'Quote must be 200 characters or less')
+    .min(5, 'Quote must be 5 characters or more'),
   whoWeAre: Yup.string()
     .required('Who We Are section is required')
-    .max(1000, 'Who We Are section must be 1000 characters or less'),
+    .max(1000, 'Who We Are section must be 1000 characters or less')
+    .min(10, 'Who We Are section must be 10 characters or more'),
   whatWeDo: Yup.string()
     .required('What We Do section is required')
-    .max(1000, 'What We Do section must be 1000 characters or less'),
+    .max(1000, 'What We Do section must be 1000 characters or less')
+    .min(10, 'Who We Are section must be 10 characters or more'),
   heroSectionVideo: Yup.string('').nullable(),
   // heroSectionVideo: Yup.string().url('Hero Section Video must be a valid URL').nullable(),
   logo: Yup.array().of(Yup.mixed().required('Logo is required')).max(1, 'Only one logo is allowed'),
@@ -39,6 +42,20 @@ const validationSchema = Yup.object().shape({
   privacyPolicy: Yup.string()
     .required('Privacy Policy is required')
     .min(10, 'Privacy Policy must be at least 10 characters long'),
+  statistics: Yup.object().shape({
+    beneficiaryServed: Yup.number()
+      .min(0, 'Beneficiary Served must be at least 0')
+      .required('Beneficiary Served is required'),
+    totalVolunteers: Yup.number()
+      .min(0, 'Total Volunteers must be at least 0')
+      .required('Total Volunteers is required'),
+    cityPresence: Yup.number()
+      .min(0, 'City Presence must be at least 0')
+      .required('City Presence is required'),
+    donationReceived: Yup.number()
+      .min(0, 'Donation Received must be at least 0')
+      .required('Donation Received is required'),
+  }),
 });
 // ----------------------------------------------------------------------
 
@@ -247,35 +264,47 @@ export default function AddHome() {
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            sx={{
-                              width: '100%',
-                            }}
+                            sx={{ width: '100%' }}
                             type="number"
                             onBlur={handleBlur}
-                            name="beneficiaryServed"
+                            name="statistics.beneficiaryServed"
                             label="Beneficiary Served"
                             onChange={handleChange}
-                            value={values?.whoWeAre || ''}
-                            error={!!(touched?.whoWeAre && errors?.whoWeAre)}
+                            value={values?.statistics?.beneficiaryServed || ''}
+                            error={
+                              !!(
+                                touched?.statistics?.beneficiaryServed &&
+                                errors?.statistics?.beneficiaryServed
+                              )
+                            }
                             helperText={
-                              touched?.whoWeAre && errors?.whoWeAre ? errors?.whoWeAre : ''
+                              touched?.statistics?.beneficiaryServed &&
+                              errors?.statistics?.beneficiaryServed
+                                ? errors?.statistics?.beneficiaryServed
+                                : ''
                             }
                           />
                         </Grid>
                         <Grid xs={12} sm={6} md={6} m={0}>
                           <TextField
-                            sx={{
-                              width: '100%',
-                            }}
+                            sx={{ width: '100%' }}
                             type="number"
                             onBlur={handleBlur}
-                            name="totalVolunteers"
+                            name="statistics.totalVolunteers"
                             label="Total Volunteers"
                             onChange={handleChange}
-                            value={values?.whatWeDo || ''}
-                            error={!!(touched?.whatWeDo && errors?.whatWeDo)}
+                            value={values?.statistics?.totalVolunteers || ''}
+                            error={
+                              !!(
+                                touched?.statistics?.totalVolunteers &&
+                                errors?.statistics?.totalVolunteers
+                              )
+                            }
                             helperText={
-                              touched?.whatWeDo && errors?.whatWeDo ? errors?.whatWeDo : ''
+                              touched?.statistics?.totalVolunteers &&
+                              errors?.statistics?.totalVolunteers
+                                ? errors?.statistics?.totalVolunteers
+                                : ''
                             }
                           />
                         </Grid>
@@ -283,36 +312,47 @@ export default function AddHome() {
                       <Grid container spacing={2} style={{ marginTop: 0 }}>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            sx={{
-                              width: '100%',
-                            }}
+                            sx={{ width: '100%' }}
                             type="number"
                             onBlur={handleBlur}
-                            name="cityPresence"
+                            name="statistics.cityPresence"
                             label="City Presence"
                             onChange={handleChange}
-                            value={values?.heroSectionVideo || ''}
-                            error={!!(touched?.heroSectionVideo && errors?.heroSectionVideo)}
+                            value={values?.statistics?.cityPresence || ''}
+                            error={
+                              !!(
+                                touched?.statistics?.cityPresence &&
+                                errors?.statistics?.cityPresence
+                              )
+                            }
                             helperText={
-                              touched?.heroSectionVideo && errors?.heroSectionVideo
-                                ? errors?.heroSectionVideo
+                              touched?.statistics?.cityPresence && errors?.statistics?.cityPresence
+                                ? errors?.statistics?.cityPresence
                                 : ''
                             }
                           />
                         </Grid>
                         <Grid xs={12} sm={6} md={6}>
                           <TextField
-                            sx={{
-                              width: '100%',
-                            }}
+                            sx={{ width: '100%' }}
                             type="number"
                             onBlur={handleBlur}
-                            name="donationReceived"
+                            name="statistics.donationReceived"
                             label="Rs. Donation Received"
                             onChange={handleChange}
-                            value={values?.quote || ''}
-                            error={!!(touched?.quote && errors?.quote)}
-                            helperText={touched?.quote && errors?.quote ? errors?.quote : ''}
+                            value={values?.statistics?.donationReceived || ''}
+                            error={
+                              !!(
+                                touched?.statistics?.donationReceived &&
+                                errors?.statistics?.donationReceived
+                              )
+                            }
+                            helperText={
+                              touched?.statistics?.donationReceived &&
+                              errors?.statistics?.donationReceived
+                                ? errors?.statistics?.donationReceived
+                                : ''
+                            }
                           />
                         </Grid>
                       </Grid>
