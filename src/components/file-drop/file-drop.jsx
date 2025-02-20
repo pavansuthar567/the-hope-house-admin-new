@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { useDropzone } from 'react-dropzone';
-import { forwardRef, useCallback } from 'react';
+import { forwardRef, useCallback, useState } from 'react';
 
-import { Box, FormHelperText, Link, Paper, Stack, Typography, alpha } from '@mui/material';
+import { Box, FormHelperText, Link, Paper, Stack, Typography, alpha, Modal } from '@mui/material';
 
 import { grey } from 'src/theme/palette';
 
@@ -54,7 +54,21 @@ const getRegexByMediaType = (type) => {
 // ----------------------------------------------------------------------
 
 const FileDrop = forwardRef(
-  ({ formik, mediaType, fileKey, previewKey, deleteKey, mediaLimit, loading, id }, ref) => {
+  (
+    {
+      formik,
+      mediaType,
+      fileKey,
+      previewKey,
+      deleteKey,
+      mediaLimit,
+      loading,
+      isShowBrowseLink = true,
+    },
+    ref
+  ) => {
+    const [zoomedImage, setZoomedImage] = useState(null);
+
     const onDrop = useCallback(
       (acceptedFiles) => {
         let lengthPreview = formik.values?.[previewKey]?.length;
@@ -183,6 +197,12 @@ const FileDrop = forwardRef(
       [formik]
     );
 
+    const handleImageClick = (image) => {
+      if (!image?.mimeType?.includes('video')) {
+        setZoomedImage(image);
+      }
+    };
+
     const browseLink = (
       <Link
         color="inherit"
@@ -250,29 +270,33 @@ const FileDrop = forwardRef(
                 alt={'Files Folder Drop'}
               />
 
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  px: 2,
-                  mt: 2,
-                  fontWeight: 700,
-                  color:
-                    formik.touched?.[previewKey] && formik.errors?.[previewKey]
-                      ? 'error.main'
-                      : 'text.primary',
-                }}
-              >
-                Drop or Select File
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', px: 2, mt: 1 }}>
-                Drop files here or click {browseLink} thorough your machine
-              </Typography>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', px: 2, fontWeight: 600 }}
-              >
-                (Max Limit: {mediaLimit})
-              </Typography>
+              {isShowBrowseLink && (
+                <>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      px: 2,
+                      mt: 2,
+                      fontWeight: 700,
+                      color:
+                        formik.touched?.[previewKey] && formik.errors?.[previewKey]
+                          ? 'error.main'
+                          : 'text.primary',
+                    }}
+                  >
+                    Drop or Select File
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', px: 2, mt: 1 }}>
+                    Drop files here or click {browseLink} thorough your machine
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'text.secondary', px: 2, fontWeight: 600 }}
+                  >
+                    (Max Limit: {mediaLimit})
+                  </Typography>
+                </>
+              )}
             </Paper>
 
             {renderErrors}
@@ -319,8 +343,13 @@ const FileDrop = forwardRef(
                     border: `1px solid ${alpha(grey[600], 0.16)}`,
                     width: mediaType === 'video' ? '300px' : '85px',
                     height: mediaType === 'video' ? '160px' : '85px',
+                    cursor: !x?.mimeType?.includes('video') ? 'pointer' : 'default',
                   }}
                   key={`filedrop-${i}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleImageClick(x);
+                  }}
                 >
                   <Box
                     muted
@@ -351,7 +380,8 @@ const FileDrop = forwardRef(
                       cursor: loading ? 'not-allowed' : 'pointer',
                       ':hover': { opacity: 1, transition: 'all 0.2s ease' },
                     }}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (!loading) onRemove(x, i);
                     }}
                   />
@@ -360,6 +390,44 @@ const FileDrop = forwardRef(
             )}
           </Stack>
         </Stack>
+
+        <Modal
+          open={!!zoomedImage}
+          onClose={() => setZoomedImage(null)}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box sx={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
+            <Box
+              component="img"
+              src={zoomedImage?.image}
+              alt="Zoomed preview"
+              sx={{
+                maxWidth: '100%',
+                maxHeight: '90vh',
+                objectFit: 'contain',
+              }}
+            />
+            <Iconify
+              icon="ep:circle-close-filled"
+              sx={{
+                top: -20,
+                right: -20,
+                width: 30,
+                height: 30,
+                opacity: 0.8,
+                position: 'absolute',
+                color: 'white',
+                cursor: 'pointer',
+                ':hover': { opacity: 1, transition: 'all 0.2s ease' },
+              }}
+              onClick={() => setZoomedImage(null)}
+            />
+          </Box>
+        </Modal>
       </>
     );
   }

@@ -139,3 +139,19 @@ export const MenuProps = {
     },
   },
 };
+
+const homeImageKeys = ['whyChooseThumb1', 'whyChooseThumb2', 'togetherBg'];
+const aboutUsImageKeys = ['empowerCommunities', 'supportTheNextInitiative'];
+const pageTitleBgKeys = [
+  'about',
+  'teamMembers',
+  'event',
+  'gallery',
+  'faq',
+  'blog',
+  'contact',
+  'donate',
+  'volunteer',
+];
+
+export const dynamicImageKeys = { homeImageKeys, aboutUsImageKeys, pageTitleBgKeys };

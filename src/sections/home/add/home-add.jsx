@@ -16,6 +16,8 @@ import { FileDrop } from 'src/components/file-drop';
 import { LoadingButton } from 'src/components/button';
 import { homeInitDetails, setSelectedHome } from 'src/store/slices/homeSlice';
 import { createHome, getHome, updateHome } from 'src/_services/home.service';
+import { dynamicImageKeys } from 'src/_helpers/constants';
+import { toTitleCase } from 'src/_helpers';
 
 // ----------------------------------------------------------------------
 
@@ -111,6 +113,12 @@ export default function AddHome() {
     initialValues: selectedHome,
     validationSchema,
   });
+
+  const {
+    homeImageKeys = [],
+    aboutUsImageKeys = [],
+    pageTitleBgKeys = [],
+  } = dynamicImageKeys || {};
 
   return (
     <>
@@ -361,11 +369,150 @@ export default function AddHome() {
                 </Grid>
                 <Grid container spacing={3}>
                   <Grid xs={12} sm={4} md={4}>
-                    <Typography variant="h6">Details</Typography>
+                    <Typography variant="h6">Image Library 1</Typography>
 
-                    <Typography variant="body2">
-                      Logo, Quote, Hero Section Video, Who We Are, What We Do...
-                    </Typography>
+                    <Typography variant="body2">Home Page Images</Typography>
+                  </Grid>
+                  <Grid xs={12} sm={8} md={8}>
+                    <Card
+                      component={Stack}
+                      spacing={2}
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        overflow: 'initial !important',
+                      }}
+                    >
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                        {homeImageKeys?.map((x, i) => {
+                          return (
+                            <Grid xs={12} sm={4} md={4} key={`homeImageKeys-${i}`}>
+                              <Typography variant="subtitle2">{toTitleCase(x)}</Typography>
+                              <FileDrop
+                                formik={{
+                                  values,
+                                  touched,
+                                  errors,
+                                  handleBlur,
+                                  handleChange,
+                                  handleSubmit,
+                                  setFieldValue,
+                                  ...restFormik,
+                                }}
+                                isShowBrowseLink={false}
+                                mediaLimit={1}
+                                fileKey={x}
+                                previewKey={`preview${x}`}
+                                deleteKey={`deleteUploaded${x}`}
+                                loading={crudHomeLoading || homeLoading}
+                                sx={{ height: 200 }}
+                              />
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Card>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
+                  <Grid xs={12} sm={4} md={4}>
+                    <Typography variant="h6">Image Library 2</Typography>
+
+                    <Typography variant="body2">About Us Page Images</Typography>
+                  </Grid>
+                  <Grid xs={12} sm={8} md={8}>
+                    <Card
+                      component={Stack}
+                      spacing={2}
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        overflow: 'initial !important',
+                      }}
+                    >
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                        {aboutUsImageKeys?.map((x, i) => {
+                          return (
+                            <Grid xs={12} sm={4} md={4} key={`aboutUsImageKeys-${i}`}>
+                              <Typography variant="subtitle2">{toTitleCase(x)}</Typography>
+                              <FileDrop
+                                formik={{
+                                  values,
+                                  touched,
+                                  errors,
+                                  handleBlur,
+                                  handleChange,
+                                  handleSubmit,
+                                  setFieldValue,
+                                  ...restFormik,
+                                }}
+                                isShowBrowseLink={false}
+                                mediaLimit={1}
+                                fileKey={x}
+                                previewKey={`preview${x}Bg`}
+                                deleteKey={`deleteUploaded${x}Bg`}
+                                loading={crudHomeLoading || homeLoading}
+                                sx={{ height: 200 }}
+                              />
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Card>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
+                  <Grid xs={12} sm={4} md={4}>
+                    <Typography variant="h6">Image Library 3</Typography>
+
+                    <Typography variant="body2">Page Title Images</Typography>
+                  </Grid>
+                  <Grid xs={12} sm={8} md={8}>
+                    <Card
+                      component={Stack}
+                      spacing={2}
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        overflow: 'initial !important',
+                      }}
+                    >
+                      <Grid container spacing={2} style={{ marginTop: 0 }}>
+                        {pageTitleBgKeys?.map((x, i) => {
+                          return (
+                            <Grid xs={12} sm={4} md={4} key={`pageTitleBgKeys-${i}`}>
+                              <Typography variant="subtitle2">{toTitleCase(x)}</Typography>
+                              <FileDrop
+                                formik={{
+                                  values,
+                                  touched,
+                                  errors,
+                                  handleBlur,
+                                  handleChange,
+                                  handleSubmit,
+                                  setFieldValue,
+                                  ...restFormik,
+                                }}
+                                isShowBrowseLink={false}
+                                mediaLimit={1}
+                                fileKey={x}
+                                previewKey={`preview${x}`}
+                                deleteKey={`deleteUploaded${x}`}
+                                loading={crudHomeLoading || homeLoading}
+                                sx={{ height: 200 }}
+                              />
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Card>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
+                  <Grid xs={12} sm={4} md={4}>
+                    <Typography variant="h6">Other</Typography>
+
+                    <Typography variant="body2">Terms Of Use, Privacy Policy...</Typography>
                   </Grid>
                   <Grid xs={12} sm={8} md={8}>
                     <Card
