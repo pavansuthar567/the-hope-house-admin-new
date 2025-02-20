@@ -312,14 +312,14 @@ const getRandomNumberLimitedDigits = () => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-function toTitleCase(str) {
+export const toTitleCase = (str) => {
   return str
     .replace(/([A-Z])/g, ' $1') // Add space before uppercase letters
     .trim() // Remove leading/trailing spaces
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
-}
+};
 
 function getHeadersFromObjects(objects, includeKeys = []) {
   // Create a Set to store unique keys
